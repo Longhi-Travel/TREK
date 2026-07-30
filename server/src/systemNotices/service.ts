@@ -2,6 +2,7 @@ import { createRequire } from 'module';
 import semver from 'semver';
 import { db } from '../db/database.js';
 import { SYSTEM_NOTICES } from './registry.js';
+import { BRANDING } from '../services/branding.js';
 import { evaluate } from './conditions.js';
 import type { SystemNotice, SystemNoticeDTO } from './types.js';
 
@@ -69,8 +70,14 @@ export function getActiveNoticesFor(userId: number): SystemNoticeDTO[] {
     return true; // default: permanent one-time dismissal
   };
 
+  // On a white-labeled install the people using the app work for the operator's
+  // business, not for TREK; upstream's donation appeals are not theirs to see.
+  // Operational notices are unaffected. Unbranded installs keep every notice.
+  const hidePromos = !!BRANDING.name;
+
   return SYSTEM_NOTICES
     .filter(n => {
+      if (n.promotional && hidePromos) return false;
       if (isStillDismissed(n)) return false;
       if (!isNoticeVersionActive(n, currentAppVersion)) return false;
       return evaluate(n, ctx);
@@ -82,7 +89,7 @@ export function getActiveNoticesFor(userId: number): SystemNoticeDTO[] {
       if (sw !== 0) return sw;
       return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
     })
-    .map(({ conditions: _c, publishedAt: _p, minVersion: _mn, maxVersion: _mx, priority: _pr, recurring: _rc, ...dto }) => dto);
+    .map(({ conditions: _c, publishedAt: _p, minVersion: _mn, maxVersion: _mx, priority: _pr, recurring: _rc, promotional: _pm, ...dto }) => dto);
 }
 
 export function dismissNotice(userId: number, noticeId: string): boolean {

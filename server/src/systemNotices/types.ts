@@ -47,7 +47,15 @@ export interface SystemNotice {
   // 'per-version': re-show on every app version bump (each install + upgrade) instead of
   // the default permanent one-time dismissal.
   recurring?: 'per-version';
+  /**
+   * Promotes the TREK project itself (donations, project news) rather than
+   * telling the operator something about their own install. Suppressed on
+   * white-labeled deployments, where the staff using the app work for a
+   * different business and upstream's fundraising is not theirs to see.
+   * Operational notices must NOT set this — they always show.
+   */
+  promotional?: boolean;
 }
 
 // DTO sent to client (same shape minus the conditions — server evaluates those)
-export type SystemNoticeDTO = Omit<SystemNotice, 'conditions' | 'publishedAt' | 'minVersion' | 'maxVersion' | 'priority' | 'recurring'>;
+export type SystemNoticeDTO = Omit<SystemNotice, 'conditions' | 'publishedAt' | 'minVersion' | 'maxVersion' | 'priority' | 'recurring' | 'promotional'>;

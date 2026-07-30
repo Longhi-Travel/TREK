@@ -65,6 +65,8 @@ export const SYSTEM_NOTICES: SystemNotice[] = [
     publishedAt: '2026-06-27T00:00:00Z',
     priority: 100,
     recurring: 'per-version',
+    // Suppressed on white-labeled installs — see SystemNotice.promotional.
+    promotional: true,
   },
 
   // ── 3.0.14 admin notice — whitespace migration collision ───────────────────
