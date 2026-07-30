@@ -34,7 +34,7 @@ const TRANSPORT_ICONS = { flight: Plane, train: Train, bus: Bus, car: Car, cruis
 
 function createMarkerIcon(place: any) {
   const cat = place.category;
-  const color = cat?.color || '#6366f1';
+  const color = cat?.color || 'var(--accent)';
   const CatIcon = getCategoryIcon(cat?.icon);
   const iconSvg = renderToStaticMarkup(createElement(CatIcon, { size: 14, strokeWidth: 2, color: 'white' }));
   return L.divIcon({
@@ -82,15 +82,15 @@ export default function SharedTripPage() {
   if (error)
     return (
       <div
-        className="bg-[#f3f4f6]"
+        className="bg-surface-secondary"
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}
       >
         <div style={{ textAlign: 'center', padding: 40 }}>
           <div style={{ fontSize: 'calc(48px * var(--fs-scale-title, 1))', marginBottom: 16 }}>🔒</div>
-          <h1 className="text-[#111827]" style={{ fontSize: 'calc(20px * var(--fs-scale-title, 1))', fontWeight: 700 }}>
+          <h1 className="text-content" style={{ fontSize: 'calc(20px * var(--fs-scale-title, 1))', fontWeight: 700 }}>
             {t('shared.expired')}
           </h1>
-          <p className="text-[#6b7280]" style={{ marginTop: 8 }}>
+          <p className="text-content-muted" style={{ marginTop: 8 }}>
             {t('shared.expiredHint')}
           </p>
         </div>
@@ -100,15 +100,15 @@ export default function SharedTripPage() {
   if (!data)
     return (
       <div
-        className="bg-[#f3f4f6]"
+        className="bg-surface-secondary"
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}
       >
         <div
           style={{
             width: 32,
             height: 32,
-            border: '3px solid #e5e7eb',
-            borderTopColor: '#111827',
+            border: '3px solid var(--border-primary)',
+            borderTopColor: 'var(--accent)',
             borderRadius: '50%',
             animation: 'spin 0.6s linear infinite',
           }}
@@ -308,14 +308,14 @@ export default function SharedTripPage() {
           </button>
           {showLangPicker && (
             <div
-              className="bg-white"
+              className="bg-surface-card"
               style={{
                 position: 'absolute',
                 top: '100%',
                 right: 0,
                 marginTop: 6,
                 borderRadius: 10,
-                boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+                boxShadow: 'var(--shadow-dropdown)',
                 padding: 4,
                 zIndex: 50,
                 minWidth: 150,
@@ -329,7 +329,7 @@ export default function SharedTripPage() {
                     useSettingsStore.setState((s) => ({ settings: { ...s.settings, language: lang.value } }));
                     setShowLangPicker(false);
                   }}
-                  className="text-[#374151]"
+                  className="text-content-secondary"
                   style={{
                     display: 'block',
                     width: '100%',
@@ -342,7 +342,7 @@ export default function SharedTripPage() {
                     borderRadius: 6,
                     fontFamily: 'inherit',
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = '#f3f4f6')}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--bg-hover)')}
                   onMouseLeave={(e) => (e.currentTarget.style.background = 'none')}
                 >
                   {lang.label}
@@ -366,7 +366,7 @@ export default function SharedTripPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={activeTab === tab.id ? 'bg-[#111827] text-white' : 'bg-surface-card text-[#6b7280]'}
+              className={activeTab === tab.id ? 'bg-accent text-accent-text' : 'bg-surface-card text-content-muted'}
               style={{
                 padding: '8px 18px',
                 borderRadius: 12,
@@ -380,8 +380,8 @@ export default function SharedTripPage() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 6,
-                borderColor: activeTab === tab.id ? '#111827' : 'var(--border-faint, #e5e7eb)',
-                boxShadow: activeTab === tab.id ? '0 2px 8px rgba(0,0,0,0.15)' : '0 1px 3px rgba(0,0,0,0.04)',
+                borderColor: activeTab === tab.id ? 'var(--accent)' : 'var(--border-primary)',
+                boxShadow: activeTab === tab.id ? 'var(--shadow-md)' : 'var(--shadow-sm)',
               }}
             >
               <tab.Icon size={13} />
@@ -399,7 +399,7 @@ export default function SharedTripPage() {
                 overflow: 'hidden',
                 height: 300,
                 marginBottom: 20,
-                boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+                boxShadow: 'var(--shadow-md)',
               }}
             >
               <MapContainer
@@ -461,7 +461,7 @@ export default function SharedTripPage() {
                       }}
                     >
                       <div
-                        className={selectedDay === day.id ? 'bg-[#111827] text-white' : 'bg-[#f3f4f6] text-[#6b7280]'}
+                        className={selectedDay === day.id ? 'bg-accent text-accent-text' : 'bg-surface-tertiary text-content-muted'}
                         style={{
                           width: 28,
                           height: 28,
@@ -478,14 +478,14 @@ export default function SharedTripPage() {
                       </div>
                       <div style={{ flex: 1 }}>
                         <div
-                          className="text-[#111827]"
+                          className="text-content"
                           style={{ fontSize: 'calc(14px * var(--fs-scale-body, 1))', fontWeight: 600 }}
                         >
                           {day.title || t('dayplan.dayN', { n: day.day_number })}
                         </div>
                         {day.date && (
                           <div
-                            className="text-[#9ca3af]"
+                            className="text-content-faint"
                             style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))', marginTop: 1 }}
                           >
                             {new Date(day.date + 'T00:00:00Z').toLocaleDateString(locale, {
@@ -500,7 +500,7 @@ export default function SharedTripPage() {
                       {dayAccs.map((acc: any) => (
                         <span
                           key={acc.id}
-                          className="bg-[#f3f4f6] text-[#6b7280]"
+                          className="bg-surface-tertiary text-content-muted"
                           style={{
                             fontSize: 'calc(9px * var(--fs-scale-caption, 1))',
                             padding: '2px 6px',
@@ -513,7 +513,7 @@ export default function SharedTripPage() {
                           <Hotel size={8} /> {acc.place_name}
                         </span>
                       ))}
-                      <span className="text-[#9ca3af]" style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))' }}>
+                      <span className="text-content-faint" style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))' }}>
                         {da.length} {t('shared.places')}
                       </span>
                     </div>
@@ -573,18 +573,18 @@ export default function SharedTripPage() {
                             return (
                               <div
                                 key={r.__leg ? `t-${r.id}-leg${r.__leg.index}` : `t-${r.id}`}
-                                className="bg-[rgba(59,130,246,0.06)]"
+                                className="bg-info-soft"
                                 style={{
                                   display: 'flex',
                                   alignItems: 'center',
                                   gap: 8,
                                   padding: '6px 8px',
                                   borderRadius: 6,
-                                  border: '1px solid rgba(59,130,246,0.15)',
+                                  border: '1px solid var(--border-faint)',
                                 }}
                               >
                                 <div
-                                  className="bg-[rgba(59,130,246,0.12)]"
+                                  className="bg-info-soft"
                                   style={{
                                     width: 24,
                                     height: 24,
@@ -595,11 +595,11 @@ export default function SharedTripPage() {
                                     flexShrink: 0,
                                   }}
                                 >
-                                  <TIcon size={12} color="#3b82f6" />
+                                  <TIcon size={12} color="var(--info)" />
                                 </div>
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                   <div
-                                    className="text-[#111827]"
+                                    className="text-content"
                                     style={{ fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 500 }}
                                   >
                                     {r.title}
@@ -607,7 +607,7 @@ export default function SharedTripPage() {
                                   </div>
                                   {sub && (
                                     <div
-                                      className="text-[#6b7280]"
+                                      className="text-content-muted"
                                       style={{ fontSize: 'calc(10px * var(--fs-scale-caption, 1))' }}
                                     >
                                       {sub}
@@ -621,27 +621,27 @@ export default function SharedTripPage() {
                             return (
                               <div
                                 key={`n-${item.data.id}`}
-                                className="bg-[#f9fafb]"
+                                className="bg-surface-secondary"
                                 style={{
                                   display: 'flex',
                                   alignItems: 'center',
                                   gap: 8,
                                   padding: '5px 8px',
                                   borderRadius: 6,
-                                  border: '1px solid #f3f4f6',
+                                  border: '1px solid var(--border-secondary)',
                                 }}
                               >
-                                <FileText size={12} color="#9ca3af" />
+                                <FileText size={12} color="var(--text-faint)" />
                                 <div>
                                   <div
-                                    className="text-[#374151]"
+                                    className="text-content-secondary"
                                     style={{ fontSize: 'calc(12px * var(--fs-scale-body, 1))' }}
                                   >
                                     {item.data.text}
                                   </div>
                                   {item.data.time && (
                                     <div
-                                      className="text-[#9ca3af]"
+                                      className="text-content-faint"
                                       style={{ fontSize: 'calc(10px * var(--fs-scale-caption, 1))' }}
                                     >
                                       {item.data.time}
@@ -670,7 +670,7 @@ export default function SharedTripPage() {
                                   width: 28,
                                   height: 28,
                                   borderRadius: '50%',
-                                  background: cat?.color || '#6366f1',
+                                  background: cat?.color || 'var(--accent)',
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
@@ -688,14 +688,14 @@ export default function SharedTripPage() {
                               </div>
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <div
-                                  className="text-[#111827]"
+                                  className="text-content"
                                   style={{ fontSize: 'calc(12.5px * var(--fs-scale-body, 1))', fontWeight: 500 }}
                                 >
                                   {place.name}
                                 </div>
                                 {(place.address || place.description) && (
                                   <div
-                                    className="text-[#9ca3af]"
+                                    className="text-content-faint"
                                     style={{
                                       fontSize: 'calc(10px * var(--fs-scale-caption, 1))',
                                       overflow: 'hidden',
@@ -709,7 +709,7 @@ export default function SharedTripPage() {
                               </div>
                               {place.place_time && (
                                 <span
-                                  className="text-[#6b7280]"
+                                  className="text-content-muted"
                                   style={{
                                     fontSize: 'calc(10px * var(--fs-scale-caption, 1))',
                                     display: 'flex',
@@ -757,7 +757,7 @@ export default function SharedTripPage() {
                   style={{ borderRadius: 10, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12 }}
                 >
                   <div
-                    className="bg-[#f3f4f6]"
+                    className="bg-surface-tertiary"
                     style={{
                       width: 32,
                       height: 32,
@@ -768,17 +768,17 @@ export default function SharedTripPage() {
                       flexShrink: 0,
                     }}
                   >
-                    <TIcon size={15} color="#6b7280" />
+                    <TIcon size={15} color="var(--text-muted)" />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div
-                      className="text-[#111827]"
+                      className="text-content"
                       style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontWeight: 600 }}
                     >
                       {r.title}
                     </div>
                     <div
-                      className="text-[#9ca3af]"
+                      className="text-content-faint"
                       style={{
                         fontSize: 'calc(11px * var(--fs-scale-caption, 1))',
                         display: 'flex',
@@ -824,8 +824,8 @@ export default function SharedTripPage() {
                   <span
                     className={
                       r.status === 'confirmed'
-                        ? 'bg-[rgba(22,163,74,0.1)] text-[#16a34a]'
-                        : 'bg-[rgba(217,119,6,0.1)] text-[#d97706]'
+                        ? 'bg-success-soft text-success'
+                        : 'bg-warning-soft text-warning'
                     }
                     style={{
                       fontSize: 'calc(10px * var(--fs-scale-caption, 1))',
@@ -854,14 +854,14 @@ export default function SharedTripPage() {
             ).map(([cat, items]: [string, any]) => (
               <div key={cat}>
                 <div
-                  className="bg-[#f9fafb] text-[#6b7280]"
+                  className="bg-surface-secondary text-content-muted"
                   style={{
                     padding: '8px 16px',
                     fontSize: 'calc(11px * var(--fs-scale-caption, 1))',
                     fontWeight: 700,
                     textTransform: 'uppercase',
                     letterSpacing: '0.05em',
-                    borderBottom: '1px solid #f3f4f6',
+                    borderBottom: '1px solid var(--border-secondary)',
                   }}
                 >
                   {cat}
@@ -874,11 +874,11 @@ export default function SharedTripPage() {
                       display: 'flex',
                       alignItems: 'center',
                       gap: 8,
-                      borderBottom: '1px solid #f9fafb',
+                      borderBottom: '1px solid var(--border-faint)',
                     }}
                   >
                     <span
-                      className={item.checked ? 'text-[#9ca3af]' : 'text-[#111827]'}
+                      className={item.checked ? 'text-content-faint' : 'text-content'}
                       style={{
                         fontSize: 'calc(13px * var(--fs-scale-body, 1))',
                         textDecoration: item.checked ? 'line-through' : 'none',
@@ -942,23 +942,23 @@ export default function SharedTripPage() {
                     style={{ borderRadius: 12, overflow: 'hidden' }}
                   >
                     <div
-                      className="bg-[#f9fafb]"
+                      className="bg-surface-secondary"
                       style={{
                         padding: '10px 16px',
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        borderBottom: '1px solid #f3f4f6',
+                        borderBottom: '1px solid var(--border-secondary)',
                       }}
                     >
                       <span
-                        className="text-[#374151]"
+                        className="text-content-secondary"
                         style={{ fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 700 }}
                       >
                         {cat}
                       </span>
                       <span
-                        className="text-[#6b7280]"
+                        className="text-content-muted"
                         style={{ fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 600 }}
                       >
                         {sumIn(items).toLocaleString(locale, { minimumFractionDigits: 2 })} {base}
@@ -972,14 +972,14 @@ export default function SharedTripPage() {
                           display: 'flex',
                           justifyContent: 'space-between',
                           alignItems: 'center',
-                          borderBottom: '1px solid #fafafa',
+                          borderBottom: '1px solid var(--border-faint)',
                         }}
                       >
-                        <span className="text-[#111827]" style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))' }}>
+                        <span className="text-content" style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))' }}>
                           {item.name}
                         </span>
                         <span
-                          className="text-[#111827]"
+                          className="text-content"
                           style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontWeight: 600 }}
                         >
                           {item.total_price
@@ -998,18 +998,18 @@ export default function SharedTripPage() {
         {activeTab === 'collab' && (collab || []).length > 0 && (
           <div className="border border-edge-faint bg-surface-card" style={{ borderRadius: 14, overflow: 'hidden' }}>
             <div
-              className="bg-[#f9fafb]"
+              className="bg-surface-secondary"
               style={{
                 padding: '12px 16px',
-                borderBottom: '1px solid #f3f4f6',
+                borderBottom: '1px solid var(--border-secondary)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 8,
               }}
             >
-              <MessageCircle size={14} color="#6b7280" />
+              <MessageCircle size={14} color="var(--text-muted)" />
               <span
-                className="text-[#374151]"
+                className="text-content-secondary"
                 style={{ fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 700 }}
               >
                 {t('shared.tabChat')} · {(collab || []).length} {t('shared.messages')}
@@ -1033,7 +1033,7 @@ export default function SharedTripPage() {
                   <div key={msg.id}>
                     {showDate && (
                       <div
-                        className="text-[#9ca3af]"
+                        className="text-content-faint"
                         style={{
                           textAlign: 'center',
                           margin: '8px 0',
@@ -1050,7 +1050,7 @@ export default function SharedTripPage() {
                     )}
                     <div style={{ display: 'flex', gap: 10 }}>
                       <div
-                        className="bg-[#e5e7eb] text-[#6b7280]"
+                        className="bg-surface-selected text-content-muted"
                         style={{
                           width: 32,
                           height: 32,
@@ -1076,13 +1076,13 @@ export default function SharedTripPage() {
                       <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
                           <span
-                            className="text-[#111827]"
+                            className="text-content"
                             style={{ fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 600 }}
                           >
                             {msg.username}
                           </span>
                           <span
-                            className="text-[#9ca3af]"
+                            className="text-content-faint"
                             style={{ fontSize: 'calc(10px * var(--fs-scale-caption, 1))' }}
                           >
                             {new Date(msg.created_at).toLocaleTimeString(locale, {
@@ -1092,7 +1092,7 @@ export default function SharedTripPage() {
                           </span>
                         </div>
                         <div
-                          className="text-[#374151]"
+                          className="text-content-secondary"
                           style={{
                             fontSize: 'calc(13px * var(--fs-scale-body, 1))',
                             marginTop: 3,
@@ -1121,17 +1121,17 @@ export default function SharedTripPage() {
               gap: 8,
               padding: '8px 16px',
               borderRadius: 20,
-              boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+              boxShadow: 'var(--shadow-sm)',
             }}
           >
             <img src="/icons/icon.svg" alt="TREK" width="18" height="18" style={{ borderRadius: 4 }} />
-            <span className="text-[#9ca3af]" style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))' }}>
-              {t('shared.sharedVia')} <strong className="text-[#6b7280]">TREK</strong>
+            <span className="text-content-faint" style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))' }}>
+              {t('shared.sharedVia')} <strong className="text-content-muted">TREK</strong>
             </span>
           </div>
-          <div className="text-[#d1d5db]" style={{ marginTop: 8, fontSize: 'calc(10px * var(--fs-scale-caption, 1))' }}>
-            Made with <span className="text-[#ef4444]">&hearts;</span> by Maurice ·{' '}
-            <a href="https://github.com/liketrek/TREK" className="text-[#9ca3af]" style={{ textDecoration: 'none' }}>
+          <div className="text-content-faint" style={{ marginTop: 8, fontSize: 'calc(10px * var(--fs-scale-caption, 1))' }}>
+            Made with <span className="text-danger">&hearts;</span> by Maurice ·{' '}
+            <a href="https://github.com/liketrek/TREK" className="text-content-faint" style={{ textDecoration: 'none' }}>
               GitHub
             </a>
           </div>
