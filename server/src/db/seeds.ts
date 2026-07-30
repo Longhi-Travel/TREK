@@ -120,6 +120,12 @@ function seedAddons(db: Database.Database): void {
       { id: 'collab', name: 'Collab', description: 'Notes, polls, and live chat for trip collaboration', type: 'trip', icon: 'Users', enabled: 1, sort_order: 6 },
       { id: 'journey', name: 'Journey', description: 'Trip tracking & travel journal — check-ins, photos, daily stories', type: 'global', icon: 'Compass', enabled: 0, sort_order: 35 },
       { id: 'airtrail', name: 'AirTrail', description: 'Sync flights from your self-hosted AirTrail instance', type: 'integration', icon: 'Plane', enabled: 0, sort_order: 14 },
+      // enabled: 0 — MUST stay disabled by default. When enabled with a hosted
+      // provider, traveler booking documents (names, passport numbers, PNRs)
+      // leave this server for a third-party AI processor. Switching it on for
+      // real client data requires a processor agreement and a stated legal
+      // basis under the applicable privacy law (LGPD for Brazilian travelers,
+      // GDPR for EU ones) — an operator decision, not a technical default.
       { id: 'llm_parsing', name: 'AI Parsing', description: 'LLM fallback for booking imports kitinerary cannot read', type: 'integration', icon: 'Sparkles', enabled: 0, sort_order: 15 },
       { id: 'collections', name: 'Collections', description: 'Personal place library — save places across trips into named lists, copy into any trip, share with others', type: 'global', icon: 'Bookmark', enabled: 0, sort_order: 16 },
     ];

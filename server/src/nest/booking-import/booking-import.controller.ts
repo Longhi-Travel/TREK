@@ -61,6 +61,18 @@ export class BookingImportController {
     if (mode === 'force-ai' && !this.bookingImport.aiAvailable(user.id)) {
       throw new HttpException({ error: 'AI parsing is not configured' }, 409);
     }
+
+    // Anthropic caps document blocks at 32 MB while TREK's own upload caps are
+    // looser — without this pre-flight an oversized file fails opaquely inside
+    // the parse job. Reject up front with an actionable message whenever the
+    // AI path could receive the file.
+    const AI_MAX_BYTES = 32 * 1024 * 1024;
+    if (mode !== 'no-ai' && files?.some((f) => f.size > AI_MAX_BYTES)) {
+      throw new HttpException(
+        { error: 'File exceeds the 32 MB AI-parsing limit. Split or compress it, or import it without AI.' },
+        413,
+      );
+    }
     if (mode === 'no-ai' && !this.bookingImport.isAvailable()) {
       throw new HttpException({ error: 'KItinerary extractor is not available on this server' }, 503);
     }

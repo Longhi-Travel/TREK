@@ -6,6 +6,23 @@ const MAX_TOKENS = 8192;
 const ANTHROPIC_VERSION = '2023-06-01';
 const TOOL_NAME = 'emit_reservations';
 
+// Anthropic request limits for document blocks. TREK's own upload caps are
+// looser, so without this pre-flight an oversized file surfaces as an opaque
+// provider 4xx instead of an actionable message.
+const ANTHROPIC_MAX_DOC_BYTES = 32 * 1024 * 1024;
+const ANTHROPIC_MAX_PDF_PAGES = 600;
+
+/** Best-effort PDF page count (object-table scan); null when undetectable. */
+function countPdfPages(buf: Buffer): number | null {
+  try {
+    const sample = buf.toString('latin1');
+    const matches = sample.match(/\/Type\s*\/Page[^s]/g);
+    return matches ? matches.length : null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Anthropic Messages API client. Structured output via forced tool-use: a single
  * `emit_reservations` tool whose `input_schema` is the reservations schema, with
@@ -20,6 +37,19 @@ export class AnthropicClient implements LlmExtractionClient {
 
     const content: unknown[] = [];
     if (input.file) {
+      if (input.file.data.length > ANTHROPIC_MAX_DOC_BYTES) {
+        throw new Error(
+          `Document is ${Math.round(input.file.data.length / 1024 / 1024)} MB — the AI parser accepts at most 32 MB. Split or compress the file, or import it without AI.`
+        );
+      }
+      if (input.file.mimeType === 'application/pdf') {
+        const pages = countPdfPages(input.file.data);
+        if (pages != null && pages > ANTHROPIC_MAX_PDF_PAGES) {
+          throw new Error(
+            `Document has ~${pages} pages — the AI parser accepts at most ${ANTHROPIC_MAX_PDF_PAGES}. Split the file, or import it without AI.`
+          );
+        }
+      }
       content.push({
         type: 'document',
         source: { type: 'base64', media_type: input.file.mimeType, data: input.file.data.toString('base64') },
@@ -30,10 +60,16 @@ export class AnthropicClient implements LlmExtractionClient {
       text: input.text ? `${USER_TEXT}\n\n${input.text}` : USER_TEXT,
     });
 
+    // Optional data-residency pin (top-level Claude API parameter). Set e.g.
+    // ANTHROPIC_INFERENCE_GEO=us to keep traveler documents in one geography;
+    // unset sends the request unpinned, exactly as before.
+    const inferenceGeo = process.env.ANTHROPIC_INFERENCE_GEO?.trim();
+
     const body = {
       model: input.model,
       max_tokens: MAX_TOKENS,
       system: input.prompt,
+      ...(inferenceGeo ? { inference_geo: inferenceGeo } : {}),
       tools: [
         {
           name: TOOL_NAME,
