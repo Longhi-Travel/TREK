@@ -177,5 +177,7 @@ const dashboard: TranslationStrings = {
   'dashboard.aria.addTimezone': '시간대 추가',
   'dashboard.aria.removeTimezone': '{city} 제거',
   'dashboard.dayCountRequired': '일수는 필수입니다',
+  'dashboard.tripEmergencyInfo': "비상 연락처 (공유 링크에 고정, Markdown)",
+  'dashboard.tripEmergencyInfoPlaceholder': "여행사 24시간 전화, 현지 긴급 번호, 호텔, 여행자 보험…",
 };
 export default dashboard;

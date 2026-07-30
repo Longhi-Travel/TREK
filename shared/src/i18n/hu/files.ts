@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': 'Véglegesen törlöd az összes kukába helyezett fájlt? Ez nem vonható vissza.',
   'files.noteLabel': 'Megjegyzés',
   'files.notePlaceholder': 'Megjegyzés hozzáadása...',
+  'files.sensitivityOn': "Védett a megosztott linken (kód szükséges) — kattintson a feloldáshoz",
+  'files.sensitivityOff': "Nyitott a megosztott linken — kattintson a kódos védelemhez",
 };
 export default files;

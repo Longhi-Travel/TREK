@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': '永久删除回收站中的所有文件？此操作无法撤销。',
   'files.noteLabel': '备注',
   'files.notePlaceholder': '添加备注...',
+  'files.sensitivityOn': "在共享链接中受保护（需要访问码）— 点击开放",
+  'files.sensitivityOff': "在共享链接中开放 — 点击以访问码保护",
 };
 export default files;

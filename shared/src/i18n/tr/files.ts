@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': 'Çöp kutusundaki tüm dosyalar kalıcı olarak silinsin mi? Bu işlem geri alınamaz.',
   'files.noteLabel': 'Not',
   'files.notePlaceholder': 'Not ekleyin...',
+  'files.sensitivityOn': "Paylaşılan bağlantıda korumalı (kod gerekir) — açmak için tıklayın",
+  'files.sensitivityOff': "Paylaşılan bağlantıda açık — kodla korumak için tıklayın",
 };
 export default files;

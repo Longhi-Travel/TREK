@@ -179,5 +179,7 @@ const dashboard: TranslationStrings = {
   'dashboard.unsplashNoResults': 'Không tìm thấy ảnh nào',
   'dashboard.coverSearchError': 'Tìm kiếm trên Unsplash không thành công',
   'dashboard.useUnsplashPhoto': 'Dùng ảnh Unsplash của {photographer}',
+  'dashboard.tripEmergencyInfo': "Liên hệ khẩn cấp (ghim trên liên kết chia sẻ, Markdown)",
+  'dashboard.tripEmergencyInfoPlaceholder': "Số 24/7 của đại lý, số khẩn cấp địa phương, khách sạn, bảo hiểm du lịch…",
 };
 export default dashboard;

@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': 'Alle Dateien im Papierkorb endgültig löschen? Das kann nicht rückgängig gemacht werden.',
   'files.noteLabel': 'Notiz',
   'files.notePlaceholder': 'Notiz hinzufügen...',
+  'files.sensitivityOn': "Im geteilten Link geschützt (Code erforderlich) — klicken zum Freigeben",
+  'files.sensitivityOff': "Im geteilten Link offen — klicken, um mit dem Code zu schützen",
 };
 export default files;

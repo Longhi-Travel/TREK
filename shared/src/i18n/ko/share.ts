@@ -11,5 +11,12 @@ const share: TranslationStrings = {
   'share.permPacking': '짐 목록',
   'share.permBudget': '비용',
   'share.permCollab': '채팅',
+  'share.permFiles': "문서",
+  'share.fileCodeTitle': "보호된 문서의 액세스 코드",
+  'share.fileCodeSet': "· 코드 설정됨",
+  'share.fileCodeHint': "여행자가 이 코드를 입력할 때까지 티켓과 신분증은 링크에서 잠긴 상태로 유지됩니다. 코드는 링크와 같은 메시지가 아닌 별도로(전화나 SMS로) 보내세요.",
+  'share.fileCodePlaceholder': "10자 이상의 영문/숫자",
+  'share.fileCodeInvalid': "공백 없이 10자 이상의 영문 또는 숫자를 사용하세요",
+  'share.fileCodeSave': "코드 저장",
 };
 export default share;

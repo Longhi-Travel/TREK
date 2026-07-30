@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': 'Поділено через',
   'shared.confirmed': 'Підтверджено',
   'shared.pending': 'Очікує',
+  'shared.website': "Сайт",
+  'shared.emergency': "Екстрені контакти",
+  'shared.offlineCopy': "Офлайн-копія від {date}",
+  'shared.updatedBanner': "Маршрут оновлено {date}",
+  'shared.documents': "Документи",
+  'shared.sensitiveLocked': "Захищений документ",
+  'shared.unlockTitle': "Введіть код доступу",
+  'shared.unlockHint': "Запитайте код доступу у свого туристичного агента.",
+  'shared.unlock': "Розблокувати",
+  'shared.unlockInvalid': "Неправильний код — спробуйте ще раз",
+  'shared.unlockLocked': "Забагато спроб. Спробуйте пізніше.",
+  'shared.sourceCode': "Вихідний код",
+  'shared.poweredBy': "Працює на",
 };
 export default shared;

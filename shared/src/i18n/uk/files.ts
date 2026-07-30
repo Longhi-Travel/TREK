@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.notePlaceholder': 'Додати нотатку...',
   'files.assignTransport': 'Транспорт',
   'files.sourceTransport': 'Транспорт',
+  'files.sensitivityOn': "Захищено у спільному посиланні (потрібен код) — натисніть, щоб відкрити",
+  'files.sensitivityOff': "Відкрито у спільному посиланні — натисніть, щоб захистити кодом",
 };
 export default files;

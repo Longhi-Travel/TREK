@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': '透過以下分享',
   'shared.confirmed': '已確認',
   'shared.pending': '待確認',
+  'shared.website': "網站",
+  'shared.emergency': "緊急聯絡人",
+  'shared.offlineCopy': "{date} 的離線副本",
+  'shared.updatedBanner': "行程已於 {date} 更新",
+  'shared.documents': "文件",
+  'shared.sensitiveLocked': "受保護的文件",
+  'shared.unlockTitle': "輸入存取碼",
+  'shared.unlockHint': "請向您的旅行社索取存取碼。",
+  'shared.unlock': "解鎖",
+  'shared.unlockInvalid': "存取碼錯誤 — 請重試",
+  'shared.unlockLocked': "嘗試次數過多，請稍後再試。",
+  'shared.sourceCode': "原始碼",
+  'shared.poweredBy': "技術支援",
 };
 export default shared;

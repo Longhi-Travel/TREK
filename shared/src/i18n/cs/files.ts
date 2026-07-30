@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': 'Trvale smazat všechny soubory v koši? Tuto akci nelze vrátit.',
   'files.noteLabel': 'Poznámka',
   'files.notePlaceholder': 'Přidat poznámku...',
+  'files.sensitivityOn': "Ve sdíleném odkazu chráněno (vyžaduje kód) — kliknutím zpřístupníte",
+  'files.sensitivityOff': "Ve sdíleném odkazu otevřené — kliknutím ochráníte kódem",
 };
 export default files;

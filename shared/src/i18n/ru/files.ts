@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': 'Безвозвратно удалить все файлы из корзины? Это действие нельзя отменить.',
   'files.noteLabel': 'Заметка',
   'files.notePlaceholder': 'Добавить заметку...',
+  'files.sensitivityOn': "Защищено в общей ссылке (нужен код) — нажмите, чтобы открыть",
+  'files.sensitivityOff': "Открыто в общей ссылке — нажмите, чтобы защитить кодом",
 };
 export default files;

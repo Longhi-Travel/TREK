@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': 'ゴミ箱内のファイルをすべて完全に削除しますか？元に戻せません。',
   'files.noteLabel': 'メモ',
   'files.notePlaceholder': 'メモを追加...',
+  'files.sensitivityOn': "共有リンクで保護中（コードが必要）— クリックで公開",
+  'files.sensitivityOff': "共有リンクで公開中 — クリックでコード保護",
 };
 export default files;

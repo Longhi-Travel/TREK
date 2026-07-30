@@ -182,5 +182,7 @@ const dashboard: TranslationStrings = {
   'dashboard.aria.addTimezone': 'Add timezone', // en-fallback
   'dashboard.aria.removeTimezone': 'Remove {city}', // en-fallback
   'dashboard.dayCountRequired': 'Ο αριθμός ημερών είναι υποχρεωτικός',
+  'dashboard.tripEmergencyInfo': "Επαφές έκτακτης ανάγκης (καρφιτσωμένες στον κοινόχρηστο σύνδεσμο, Markdown)",
+  'dashboard.tripEmergencyInfoPlaceholder': "24ωρο τηλέφωνο γραφείου, τοπικός αριθμός έκτακτης ανάγκης, ξενοδοχείο, ασφάλεια ταξιδιού…",
 };
 export default dashboard;

@@ -12,5 +12,12 @@ const share: TranslationStrings = {
   'share.permPacking': 'Đóng gói',
   'share.permBudget': 'Chi phí',
   'share.permCollab': 'Trò chuyện',
+  'share.permFiles': "Tài liệu",
+  'share.fileCodeTitle': "Mã truy cập cho tài liệu được bảo vệ",
+  'share.fileCodeSet': "· đã đặt mã",
+  'share.fileCodeHint': "Vé và giấy tờ tùy thân sẽ bị khóa trong liên kết cho đến khi hành khách nhập mã này. Gửi mã riêng (qua điện thoại hoặc SMS), không bao giờ trong cùng tin nhắn với liên kết.",
+  'share.fileCodePlaceholder': "10+ chữ cái/chữ số",
+  'share.fileCodeInvalid': "Dùng ít nhất 10 chữ cái hoặc chữ số (không khoảng trắng)",
+  'share.fileCodeSave': "Lưu mã",
 };
 export default share;

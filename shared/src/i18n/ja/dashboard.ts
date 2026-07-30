@@ -177,5 +177,7 @@ const dashboard: TranslationStrings = {
   'dashboard.aria.addTimezone': 'タイムゾーンを追加',
   'dashboard.aria.removeTimezone': '{city}を削除',
   'dashboard.dayCountRequired': '日数は必須です',
+  'dashboard.tripEmergencyInfo': "緊急連絡先（共有リンクに固定表示、Markdown）",
+  'dashboard.tripEmergencyInfoPlaceholder': "代理店の24時間対応番号、現地の緊急番号、ホテル、旅行保険…",
 };
 export default dashboard;

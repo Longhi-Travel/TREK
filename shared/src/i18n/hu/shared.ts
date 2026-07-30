@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': 'Megosztva:',
   'shared.confirmed': 'Megerősítve',
   'shared.pending': 'Függőben',
+  'shared.website': "Weboldal",
+  'shared.emergency': "Vészhelyzeti elérhetőségek",
+  'shared.offlineCopy': "Offline másolat: {date}",
+  'shared.updatedBanner': "Az útiterv frissült: {date}",
+  'shared.documents': "Dokumentumok",
+  'shared.sensitiveLocked': "Védett dokumentum",
+  'shared.unlockTitle': "Adja meg a hozzáférési kódot",
+  'shared.unlockHint': "A hozzáférési kódot az utazási irodájától kérheti.",
+  'shared.unlock': "Feloldás",
+  'shared.unlockInvalid': "Hibás kód — próbálja újra",
+  'shared.unlockLocked': "Túl sok próbálkozás. Próbálja később.",
+  'shared.sourceCode': "Forráskód",
+  'shared.poweredBy': "Működteti:",
 };
 export default shared;

@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': 'Κοινοποιήθηκε μέσω',
   'shared.confirmed': 'Επιβεβαιωμένο',
   'shared.pending': 'Σε εκκρεμότητα',
+  'shared.website': "Ιστότοπος",
+  'shared.emergency': "Επαφές έκτακτης ανάγκης",
+  'shared.offlineCopy': "Αντίγραφο εκτός σύνδεσης από {date}",
+  'shared.updatedBanner': "Το δρομολόγιο ενημερώθηκε {date}",
+  'shared.documents': "Έγγραφα",
+  'shared.sensitiveLocked': "Προστατευμένο έγγραφο",
+  'shared.unlockTitle': "Εισαγάγετε τον κωδικό πρόσβασης",
+  'shared.unlockHint': "Ζητήστε τον κωδικό πρόσβασης από το ταξιδιωτικό σας γραφείο.",
+  'shared.unlock': "Ξεκλείδωμα",
+  'shared.unlockInvalid': "Λάθος κωδικός — δοκιμάστε ξανά",
+  'shared.unlockLocked': "Πάρα πολλές προσπάθειες. Δοκιμάστε αργότερα.",
+  'shared.sourceCode': "Πηγαίος κώδικας",
+  'shared.poweredBy': "Με την υποστήριξη του",
 };
 export default shared;

@@ -176,5 +176,7 @@ const dashboard: TranslationStrings = {
   'dashboard.aria.addTimezone': 'Добавить часовой пояс',
   'dashboard.aria.removeTimezone': 'Удалить {city}',
   'dashboard.dayCountRequired': 'Количество дней обязательно',
+  'dashboard.tripEmergencyInfo': "Экстренные контакты (закреплены в общей ссылке, Markdown)",
+  'dashboard.tripEmergencyInfoPlaceholder': "Круглосуточный номер агентства, местная экстренная служба, отель, страховка…",
 };
 export default dashboard;

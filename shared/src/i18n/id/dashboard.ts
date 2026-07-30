@@ -180,5 +180,7 @@ const dashboard: TranslationStrings = {
   'dashboard.aria.addTimezone': 'Tambah zona waktu',
   'dashboard.aria.removeTimezone': 'Hapus {city}',
   'dashboard.dayCountRequired': 'Jumlah hari wajib diisi',
+  'dashboard.tripEmergencyInfo': "Kontak darurat (disematkan di tautan berbagi, Markdown)",
+  'dashboard.tripEmergencyInfoPlaceholder': "Nomor 24/7 agen, nomor darurat setempat, hotel, asuransi perjalanan…",
 };
 export default dashboard;

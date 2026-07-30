@@ -180,5 +180,7 @@ const dashboard: TranslationStrings = {
   'dashboard.aria.addTimezone': 'Lägg till tidszon',
   'dashboard.aria.removeTimezone': 'Ta bort {city}',
   'dashboard.dayCountRequired': 'Antalet dagar måste anges',
+  'dashboard.tripEmergencyInfo': "Nödkontakter (fästa i den delade länken, Markdown)",
+  'dashboard.tripEmergencyInfoPlaceholder': "Byråns journummer, lokalt nödnummer, hotell, reseförsäkring…",
 };
 export default dashboard;

@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': '공유 경로',
   'shared.confirmed': '확정됨',
   'shared.pending': '대기 중',
+  'shared.website': "웹사이트",
+  'shared.emergency': "비상 연락처",
+  'shared.offlineCopy': "{date} 오프라인 사본",
+  'shared.updatedBanner': "{date}에 일정이 업데이트됨",
+  'shared.documents': "문서",
+  'shared.sensitiveLocked': "보호된 문서",
+  'shared.unlockTitle': "액세스 코드 입력",
+  'shared.unlockHint': "액세스 코드는 여행사에 문의하세요.",
+  'shared.unlock': "잠금 해제",
+  'shared.unlockInvalid': "잘못된 코드 — 다시 시도하세요",
+  'shared.unlockLocked': "시도 횟수가 너무 많습니다. 나중에 다시 시도하세요.",
+  'shared.sourceCode': "소스 코드",
+  'shared.poweredBy': "Powered by",
 };
 export default shared;

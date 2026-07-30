@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': 'Gedeeld via',
   'shared.confirmed': 'Bevestigd',
   'shared.pending': 'In afwachting',
+  'shared.website': "Website",
+  'shared.emergency': "Noodcontacten",
+  'shared.offlineCopy': "Offline kopie van {date}",
+  'shared.updatedBanner': "Reisplan bijgewerkt op {date}",
+  'shared.documents': "Documenten",
+  'shared.sensitiveLocked': "Beveiligd document",
+  'shared.unlockTitle': "Voer de toegangscode in",
+  'shared.unlockHint': "Vraag de toegangscode aan je reisbureau.",
+  'shared.unlock': "Ontgrendelen",
+  'shared.unlockInvalid': "Onjuiste code — probeer opnieuw",
+  'shared.unlockLocked': "Te veel pogingen. Probeer het later opnieuw.",
+  'shared.sourceCode': "Broncode",
+  'shared.poweredBy': "Mogelijk gemaakt door",
 };
 export default shared;

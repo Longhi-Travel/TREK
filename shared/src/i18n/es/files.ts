@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.toast.restoreError': 'Error al restaurar',
   'files.confirm.permanentDelete': 'Eliminar este archivo permanentemente? No se puede deshacer.',
   'files.confirm.emptyTrash': 'Eliminar todos los archivos de la papelera? No se puede deshacer.',
+  'files.sensitivityOn': "Protegido en el enlace compartido (requiere código) — clic para liberar",
+  'files.sensitivityOff': "Abierto en el enlace compartido — clic para proteger con el código",
 };
 export default files;

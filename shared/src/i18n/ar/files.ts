@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': 'حذف جميع ملفات سلة المهملات نهائيًا؟ لا يمكن التراجع عن ذلك.',
   'files.noteLabel': 'ملاحظة',
   'files.notePlaceholder': 'أضف ملاحظة...',
+  'files.sensitivityOn': "محمي في رابط المشاركة (يتطلب رمزًا) — انقر للفتح",
+  'files.sensitivityOff': "مفتوح في رابط المشاركة — انقر للحماية بالرمز",
 };
 export default files;

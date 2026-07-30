@@ -57,5 +57,7 @@ const files: TranslationStrings = {
     'Alle bestanden in de prullenbak permanent verwijderen? Dit kan niet ongedaan worden gemaakt.',
   'files.noteLabel': 'Notitie',
   'files.notePlaceholder': 'Notitie toevoegen...',
+  'files.sensitivityOn': "Beveiligd op de gedeelde link (code vereist) — klik om vrij te geven",
+  'files.sensitivityOff': "Open op de gedeelde link — klik om met de code te beveiligen",
 };
 export default files;

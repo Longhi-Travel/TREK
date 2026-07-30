@@ -12,5 +12,12 @@ const share: TranslationStrings = {
   'share.permPacking': 'Inpaklijst',
   'share.permBudget': 'Onkosten',
   'share.permCollab': 'Chat',
+  'share.permFiles': "Documenten",
+  'share.fileCodeTitle': "Toegangscode voor beveiligde documenten",
+  'share.fileCodeSet': "· code ingesteld",
+  'share.fileCodeHint': "Tickets en identiteitsdocumenten blijven vergrendeld tot de reiziger deze code invoert. Stuur de code apart (bijv. telefonisch of per sms), nooit in hetzelfde bericht als de link.",
+  'share.fileCodePlaceholder': "10+ letters/cijfers",
+  'share.fileCodeInvalid': "Gebruik minstens 10 letters of cijfers (zonder spaties)",
+  'share.fileCodeSave': "Code opslaan",
 };
 export default share;

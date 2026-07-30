@@ -57,5 +57,7 @@ const files: TranslationStrings = {
     'Czy na pewno chcesz trwale usunąć wszystkie pliki z kosza? Tej operacji nie można cofnąć.',
   'files.noteLabel': 'Notatka',
   'files.notePlaceholder': 'Dodaj notatkę...',
+  'files.sensitivityOn': "Chronione w udostępnionym linku (wymaga kodu) — kliknij, aby odblokować",
+  'files.sensitivityOff': "Otwarte w udostępnionym linku — kliknij, aby chronić kodem",
 };
 export default files;

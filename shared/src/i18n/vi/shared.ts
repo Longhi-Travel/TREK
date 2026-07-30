@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': 'Được chia sẻ qua',
   'shared.confirmed': 'Đã xác nhận',
   'shared.pending': 'Chưa giải quyết',
+  'shared.website': "Trang web",
+  'shared.emergency': "Liên hệ khẩn cấp",
+  'shared.offlineCopy': "Bản sao ngoại tuyến từ {date}",
+  'shared.updatedBanner': "Lịch trình được cập nhật {date}",
+  'shared.documents': "Tài liệu",
+  'shared.sensitiveLocked': "Tài liệu được bảo vệ",
+  'shared.unlockTitle': "Nhập mã truy cập",
+  'shared.unlockHint': "Hãy hỏi mã truy cập từ đại lý du lịch của bạn.",
+  'shared.unlock': "Mở khóa",
+  'shared.unlockInvalid': "Mã sai — thử lại",
+  'shared.unlockLocked': "Quá nhiều lần thử. Hãy thử lại sau.",
+  'shared.sourceCode': "Mã nguồn",
+  'shared.poweredBy': "Vận hành bởi",
 };
 export default shared;

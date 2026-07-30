@@ -11,5 +11,12 @@ const share: TranslationStrings = {
   'share.permPacking': '行李',
   'share.permBudget': '费用',
   'share.permCollab': '聊天',
+  'share.permFiles': "文件",
+  'share.fileCodeTitle': "受保护文件的访问码",
+  'share.fileCodeSet': "· 已设置访问码",
+  'share.fileCodeHint': "在旅客输入此访问码之前，机票和证件在链接中保持锁定。请单独发送访问码（电话或短信），切勿与链接放在同一条消息中。",
+  'share.fileCodePlaceholder': "10位以上字母/数字",
+  'share.fileCodeInvalid': "请使用至少10个字母或数字（不含空格）",
+  'share.fileCodeSave': "保存访问码",
 };
 export default share;

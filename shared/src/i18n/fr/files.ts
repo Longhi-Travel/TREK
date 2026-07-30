@@ -57,5 +57,7 @@ const files: TranslationStrings = {
     'Supprimer définitivement tous les fichiers de la corbeille ? Cette action est irréversible.',
   'files.noteLabel': 'Note',
   'files.notePlaceholder': 'Ajouter une note…',
+  'files.sensitivityOn': "Protégé sur le lien partagé (code requis) — cliquer pour ouvrir",
+  'files.sensitivityOff': "Ouvert sur le lien partagé — cliquer pour protéger par le code",
 };
 export default files;

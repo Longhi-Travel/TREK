@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': 'Dibagikan via',
   'shared.confirmed': 'Dikonfirmasi',
   'shared.pending': 'Menunggu',
+  'shared.website': "Situs web",
+  'shared.emergency': "Kontak darurat",
+  'shared.offlineCopy': "Salinan offline dari {date}",
+  'shared.updatedBanner': "Rencana perjalanan diperbarui {date}",
+  'shared.documents': "Dokumen",
+  'shared.sensitiveLocked': "Dokumen terlindungi",
+  'shared.unlockTitle': "Masukkan kode akses",
+  'shared.unlockHint': "Minta kode akses kepada agen perjalanan Anda.",
+  'shared.unlock': "Buka kunci",
+  'shared.unlockInvalid': "Kode salah — coba lagi",
+  'shared.unlockLocked': "Terlalu banyak percobaan. Coba lagi nanti.",
+  'shared.sourceCode': "Kode sumber",
+  'shared.poweredBy': "Didukung oleh",
 };
 export default shared;

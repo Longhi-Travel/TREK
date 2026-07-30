@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': 'Vill du radera alla filer i papperskorgen permanent? Detta går inte att ångra.',
   'files.noteLabel': 'Notering',
   'files.notePlaceholder': 'Lägg till en notering...',
+  'files.sensitivityOn': "Skyddad i den delade länken (kräver kod) — klicka för att öppna",
+  'files.sensitivityOff': "Öppen i den delade länken — klicka för att skydda med koden",
 };
 export default files;

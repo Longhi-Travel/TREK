@@ -58,5 +58,7 @@ const files: TranslationStrings = {
     'Eliminare in modo permanente tutti i file nel cestino? Questa operazione non può essere annullata.',
   'files.noteLabel': 'Nota',
   'files.notePlaceholder': 'Aggiungi una nota...',
+  'files.sensitivityOn': "Protetto nel link condiviso (richiede codice) — clic per sbloccare",
+  'files.sensitivityOff': "Aperto nel link condiviso — clic per proteggere con il codice",
 };
 export default files;

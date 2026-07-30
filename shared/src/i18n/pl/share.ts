@@ -12,5 +12,12 @@ const share: TranslationStrings = {
   'share.permPacking': 'Lista pakowania',
   'share.permBudget': 'Koszty',
   'share.permCollab': 'Czat',
+  'share.permFiles': "Dokumenty",
+  'share.fileCodeTitle': "Kod dostępu do chronionych dokumentów",
+  'share.fileCodeSet': "· kod ustawiony",
+  'share.fileCodeHint': "Bilety i skany dokumentów pozostają zablokowane, dopóki podróżny nie wpisze tego kodu. Wyślij go osobno (telefonicznie lub SMS-em), nigdy w tej samej wiadomości co link.",
+  'share.fileCodePlaceholder': "10+ liter/cyfr",
+  'share.fileCodeInvalid': "Użyj co najmniej 10 liter lub cyfr (bez spacji)",
+  'share.fileCodeSave': "Zapisz kod",
 };
 export default share;

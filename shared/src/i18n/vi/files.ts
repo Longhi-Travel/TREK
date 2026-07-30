@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': 'Xóa vĩnh viễn tất cả các tập tin vào thùng rác? Điều này không thể hoàn tác được.',
   'files.noteLabel': 'Ghi chú',
   'files.notePlaceholder': 'Thêm ghi chú...',
+  'files.sensitivityOn': "Được bảo vệ trên liên kết chia sẻ (cần mã) — nhấp để mở",
+  'files.sensitivityOff': "Mở trên liên kết chia sẻ — nhấp để bảo vệ bằng mã",
 };
 export default files;

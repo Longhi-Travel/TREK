@@ -12,5 +12,12 @@ const share: TranslationStrings = {
   'share.permPacking': 'Valigia',
   'share.permBudget': 'Costi',
   'share.permCollab': 'Chat',
+  'share.permFiles': "Documenti",
+  'share.fileCodeTitle': "Codice di accesso per i documenti protetti",
+  'share.fileCodeSet': "· codice impostato",
+  'share.fileCodeHint': "Biglietti e documenti restano bloccati nel link finché il viaggiatore non inserisce questo codice. Invialo separatamente (a voce o via SMS), mai nello stesso messaggio del link.",
+  'share.fileCodePlaceholder': "10+ lettere/cifre",
+  'share.fileCodeInvalid': "Usa almeno 10 lettere o cifre (senza spazi)",
+  'share.fileCodeSave': "Salva codice",
 };
 export default share;

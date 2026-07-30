@@ -12,5 +12,12 @@ const share: TranslationStrings = {
   'share.permPacking': 'الأمتعة',
   'share.permBudget': 'التكاليف',
   'share.permCollab': 'الدردشة',
+  'share.permFiles': "المستندات",
+  'share.fileCodeTitle': "رمز الوصول للمستندات المحمية",
+  'share.fileCodeSet': "· تم تعيين الرمز",
+  'share.fileCodeHint': "تبقى التذاكر والمستندات مقفلة في الرابط حتى يُدخل المسافر هذا الرمز. أرسل الرمز بشكل منفصل (هاتفيًا أو عبر رسالة نصية)، وليس أبدًا في نفس رسالة الرابط.",
+  'share.fileCodePlaceholder': "10+ أحرف/أرقام",
+  'share.fileCodeInvalid': "استخدم 10 أحرف أو أرقام على الأقل (بدون مسافات)",
+  'share.fileCodeSave': "حفظ الرمز",
 };
 export default share;

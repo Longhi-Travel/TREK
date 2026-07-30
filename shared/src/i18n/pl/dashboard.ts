@@ -181,5 +181,7 @@ const dashboard: TranslationStrings = {
   'dashboard.aria.addTimezone': 'Dodaj strefę czasową',
   'dashboard.aria.removeTimezone': 'Usuń {city}',
   'dashboard.dayCountRequired': 'Liczba dni jest wymagana',
+  'dashboard.tripEmergencyInfo': "Kontakty alarmowe (przypięte w udostępnionym linku, Markdown)",
+  'dashboard.tripEmergencyInfoPlaceholder': "Całodobowy numer biura, lokalny numer alarmowy, hotel, ubezpieczenie…",
 };
 export default dashboard;

@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': '永久刪除回收站中的所有檔案？此操作無法撤銷。',
   'files.noteLabel': '備註',
   'files.notePlaceholder': '新增備註...',
+  'files.sensitivityOn': "在共享連結中受保護（需要存取碼）— 點擊開放",
+  'files.sensitivityOff': "在共享連結中開放 — 點擊以存取碼保護",
 };
 export default files;

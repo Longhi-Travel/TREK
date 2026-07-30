@@ -181,5 +181,7 @@ const dashboard: TranslationStrings = {
   'dashboard.aria.addTimezone': 'Aggiungi fuso orario',
   'dashboard.aria.removeTimezone': 'Rimuovi {city}',
   'dashboard.dayCountRequired': 'Il numero di giorni è obbligatorio',
+  'dashboard.tripEmergencyInfo': "Contatti di emergenza (fissati nel link condiviso, Markdown)",
+  'dashboard.tripEmergencyInfoPlaceholder': "Numero 24/7 dell'agenzia, emergenze locali, hotel, assicurazione di viaggio…",
 };
 export default dashboard;

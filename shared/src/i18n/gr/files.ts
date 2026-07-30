@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': 'Οριστική διαγραφή όλων των αρχείων στον κάδο; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.',
   'files.noteLabel': 'Σημείωση',
   'files.notePlaceholder': 'Προσθήκη σημείωσης...',
+  'files.sensitivityOn': "Προστατευμένο στον κοινόχρηστο σύνδεσμο (απαιτείται κωδικός) — κλικ για άνοιγμα",
+  'files.sensitivityOff': "Ανοιχτό στον κοινόχρηστο σύνδεσμο — κλικ για προστασία με τον κωδικό",
 };
 export default files;

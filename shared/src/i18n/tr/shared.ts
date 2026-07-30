@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': 'Şununla paylaşıldı:',
   'shared.confirmed': 'Onaylandı',
   'shared.pending': 'Askıda olması',
+  'shared.website': "Web sitesi",
+  'shared.emergency': "Acil durum kişileri",
+  'shared.offlineCopy': "{date} tarihli çevrimdışı kopya",
+  'shared.updatedBanner': "Gezi planı {date} tarihinde güncellendi",
+  'shared.documents': "Belgeler",
+  'shared.sensitiveLocked': "Korumalı belge",
+  'shared.unlockTitle': "Erişim kodunu girin",
+  'shared.unlockHint': "Erişim kodunu seyahat acentenizden isteyin.",
+  'shared.unlock': "Kilidi aç",
+  'shared.unlockInvalid': "Yanlış kod — tekrar deneyin",
+  'shared.unlockLocked': "Çok fazla deneme. Daha sonra tekrar deneyin.",
+  'shared.sourceCode': "Kaynak kodu",
+  'shared.poweredBy': "Altyapı:",
 };
 export default shared;

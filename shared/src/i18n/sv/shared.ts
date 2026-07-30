@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': 'Delad via',
   'shared.confirmed': 'Godkänt',
   'shared.pending': 'Pendlande',
+  'shared.website': "Webbplats",
+  'shared.emergency': "Nödkontakter",
+  'shared.offlineCopy': "Offlinekopia från {date}",
+  'shared.updatedBanner': "Resplanen uppdaterades {date}",
+  'shared.documents': "Dokument",
+  'shared.sensitiveLocked': "Skyddat dokument",
+  'shared.unlockTitle': "Ange åtkomstkod",
+  'shared.unlockHint': "Be din resebyrå om åtkomstkoden.",
+  'shared.unlock': "Lås upp",
+  'shared.unlockInvalid': "Fel kod — försök igen",
+  'shared.unlockLocked': "För många försök. Försök igen senare.",
+  'shared.sourceCode': "Källkod",
+  'shared.poweredBy': "Drivs med",
 };
 export default shared;

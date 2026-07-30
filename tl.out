@@ -1,0 +1,25 @@
+theme:lint — 514 hardcoded-style hits across 106 files (map/PDF excluded).
+    55  pages/LoginPage.tsx
+    50  components/Budget/CostsPanel.tsx
+    28  components/Planner/ReservationsPanel.tsx
+    24  components/Layout/DemoBanner.tsx
+    23  pages/ResetPasswordPage.tsx
+    18  pages/ForgotPasswordPage.tsx
+    14  components/Admin/GitHubPanel.tsx
+    14  components/Settings/IntegrationsTab.tsx
+    12  components/Budget/costsCategories.tsx
+    12  pages/JourneyPublicPage.tsx
+    11  components/Settings/AboutTab.tsx
+    11  components/Settings/AccountTab.tsx
+    10  components/Files/FileManagerImageLightbox.tsx
+    10  components/Journey/PhotoLightbox.tsx
+     9  components/Planner/IcsSubscribeModal.tsx
+     9  pages/AtlasPage.tsx
+     8  components/Map/poiCategories.ts
+     7  components/Planner/DayDetailPanel.tsx
+     7  components/shared/Toast.tsx
+     7  components/Todo/TodoListPanel.tsx
+  … and 86 more files.
+
+New/changed code must use tokens (bg-surface / text-content / bg-accent / var(--..)) and the
+text-title/subtitle/body/caption tiers — never inline #hex, never bg-[#..]. See src/theme/README.md.

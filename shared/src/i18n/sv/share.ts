@@ -12,5 +12,12 @@ const share: TranslationStrings = {
   'share.permPacking': 'Packning',
   'share.permBudget': 'Kostnader',
   'share.permCollab': 'Chatt',
+  'share.permFiles': "Dokument",
+  'share.fileCodeTitle': "Åtkomstkod för skyddade dokument",
+  'share.fileCodeSet': "· kod satt",
+  'share.fileCodeHint': "Biljetter och ID-handlingar förblir låsta i länken tills resenären anger denna kod. Skicka koden separat (via samtal eller SMS), aldrig i samma meddelande som länken.",
+  'share.fileCodePlaceholder': "10+ bokstäver/siffror",
+  'share.fileCodeInvalid': "Använd minst 10 bokstäver eller siffror (utan mellanslag)",
+  'share.fileCodeSave': "Spara kod",
 };
 export default share;

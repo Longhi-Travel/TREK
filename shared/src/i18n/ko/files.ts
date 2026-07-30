@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': '휴지통의 모든 파일을 영구 삭제할까요? 이 작업은 취소할 수 없습니다.',
   'files.noteLabel': '메모',
   'files.notePlaceholder': '메모 추가...',
+  'files.sensitivityOn': "공유 링크에서 보호됨(코드 필요) — 클릭하여 공개",
+  'files.sensitivityOff': "공유 링크에서 공개됨 — 클릭하여 코드로 보호",
 };
 export default files;

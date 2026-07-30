@@ -12,5 +12,12 @@ const share: TranslationStrings = {
   'share.permPacking': 'Речі',
   'share.permBudget': 'Витрати',
   'share.permCollab': 'Чат',
+  'share.permFiles': "Документи",
+  'share.fileCodeTitle': "Код доступу до захищених документів",
+  'share.fileCodeSet': "· код встановлено",
+  'share.fileCodeHint': "Квитки та документи залишаються заблокованими, доки мандрівник не введе цей код. Надсилайте код окремо (голосом або SMS), ніколи в одному повідомленні з посиланням.",
+  'share.fileCodePlaceholder': "10+ літер/цифр",
+  'share.fileCodeInvalid': "Щонайменше 10 літер або цифр (без пробілів)",
+  'share.fileCodeSave': "Зберегти код",
 };
 export default share;

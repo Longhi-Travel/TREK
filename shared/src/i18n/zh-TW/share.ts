@@ -11,5 +11,12 @@ const share: TranslationStrings = {
   'share.permPacking': '行李',
   'share.permBudget': '費用',
   'share.permCollab': '聊天',
+  'share.permFiles': "文件",
+  'share.fileCodeTitle': "受保護文件的存取碼",
+  'share.fileCodeSet': "· 已設定存取碼",
+  'share.fileCodeHint': "在旅客輸入此存取碼之前，機票和證件在連結中保持鎖定。請另外傳送存取碼（電話或簡訊），切勿與連結放在同一則訊息中。",
+  'share.fileCodePlaceholder': "10位以上字母/數字",
+  'share.fileCodeInvalid': "請使用至少10個字母或數字（不含空格）",
+  'share.fileCodeSave': "儲存存取碼",
 };
 export default share;

@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': '共有元',
   'shared.confirmed': '確定',
   'shared.pending': '保留',
+  'shared.website': "ウェブサイト",
+  'shared.emergency': "緊急連絡先",
+  'shared.offlineCopy': "{date} のオフラインコピー",
+  'shared.updatedBanner': "{date} に旅程が更新されました",
+  'shared.documents': "書類",
+  'shared.sensitiveLocked': "保護された書類",
+  'shared.unlockTitle': "アクセスコードを入力",
+  'shared.unlockHint': "アクセスコードは旅行代理店にお問い合わせください。",
+  'shared.unlock': "ロック解除",
+  'shared.unlockInvalid': "コードが違います — もう一度お試しください",
+  'shared.unlockLocked': "試行回数が多すぎます。しばらくしてからお試しください。",
+  'shared.sourceCode': "ソースコード",
+  'shared.poweredBy': "Powered by",
 };
 export default shared;

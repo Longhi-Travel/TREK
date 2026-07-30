@@ -180,5 +180,7 @@ const dashboard: TranslationStrings = {
   'dashboard.aria.addTimezone': 'Zeitzone hinzufügen',
   'dashboard.aria.removeTimezone': '{city} entfernen',
   'dashboard.dayCountRequired': 'Anzahl der Tage ist erforderlich',
+  'dashboard.tripEmergencyInfo': "Notfallkontakte (fixiert im geteilten Link, Markdown)",
+  'dashboard.tripEmergencyInfoPlaceholder': "24/7-Nummer der Agentur, lokaler Notruf, Hotel, Reiseversicherung…",
 };
 export default dashboard;

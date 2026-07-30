@@ -12,5 +12,12 @@ const share: TranslationStrings = {
   'share.permPacking': 'Balení',
   'share.permBudget': 'Náklady',
   'share.permCollab': 'Chat',
+  'share.permFiles': "Dokumenty",
+  'share.fileCodeTitle': "Přístupový kód k chráněným dokumentům",
+  'share.fileCodeSet': "· kód nastaven",
+  'share.fileCodeHint': "Letenky a doklady zůstanou v odkazu zamčené, dokud cestující nezadá tento kód. Pošlete ho zvlášť (telefonicky nebo SMS), nikdy ve stejné zprávě jako odkaz.",
+  'share.fileCodePlaceholder': "10+ písmen/číslic",
+  'share.fileCodeInvalid': "Použijte alespoň 10 písmen nebo číslic (bez mezer)",
+  'share.fileCodeSave': "Uložit kód",
 };
 export default share;

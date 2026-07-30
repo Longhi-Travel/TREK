@@ -176,5 +176,7 @@ const dashboard: TranslationStrings = {
   'dashboard.aria.addTimezone': 'إضافة منطقة زمنية',
   'dashboard.aria.removeTimezone': 'إزالة {city}',
   'dashboard.dayCountRequired': 'عدد الأيام مطلوب',
+  'dashboard.tripEmergencyInfo': "جهات اتصال الطوارئ (مثبتة في رابط المشاركة، Markdown)",
+  'dashboard.tripEmergencyInfoPlaceholder': "رقم الوكالة على مدار الساعة، رقم الطوارئ المحلي، الفندق، تأمين السفر…",
 };
 export default dashboard;

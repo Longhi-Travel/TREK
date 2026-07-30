@@ -177,5 +177,7 @@ const dashboard: TranslationStrings = {
   'dashboard.aria.addTimezone': '添加时区',
   'dashboard.aria.removeTimezone': '移除 {city}',
   'dashboard.dayCountRequired': '天数为必填项',
+  'dashboard.tripEmergencyInfo': "紧急联系人（固定显示在共享链接上，Markdown）",
+  'dashboard.tripEmergencyInfoPlaceholder': "旅行社24小时电话、当地紧急电话、酒店、旅行保险…",
 };
 export default dashboard;

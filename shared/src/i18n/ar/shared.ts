@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': 'تمت المشاركة عبر',
   'shared.confirmed': 'مؤكد',
   'shared.pending': 'قيد الانتظار',
+  'shared.website': "الموقع الإلكتروني",
+  'shared.emergency': "جهات اتصال الطوارئ",
+  'shared.offlineCopy': "نسخة دون اتصال من {date}",
+  'shared.updatedBanner': "تم تحديث خط الرحلة في {date}",
+  'shared.documents': "المستندات",
+  'shared.sensitiveLocked': "مستند محمي",
+  'shared.unlockTitle': "أدخل رمز الوصول",
+  'shared.unlockHint': "اطلب رمز الوصول من وكيل السفر الخاص بك.",
+  'shared.unlock': "فتح",
+  'shared.unlockInvalid': "رمز غير صحيح — حاول مرة أخرى",
+  'shared.unlockLocked': "محاولات كثيرة جدًا. حاول لاحقًا.",
+  'shared.sourceCode': "الكود المصدري",
+  'shared.poweredBy': "مدعوم من",
 };
 export default shared;

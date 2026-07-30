@@ -56,5 +56,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': 'Hapus semua file di sampah secara permanen? Tindakan ini tidak bisa dibatalkan.',
   'files.noteLabel': 'Catatan',
   'files.notePlaceholder': 'Tambahkan catatan...',
+  'files.sensitivityOn': "Terlindungi di tautan berbagi (perlu kode) — klik untuk membuka",
+  'files.sensitivityOff': "Terbuka di tautan berbagi — klik untuk melindungi dengan kode",
 };
 export default files;

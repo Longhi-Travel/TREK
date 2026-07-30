@@ -176,5 +176,7 @@ const dashboard: TranslationStrings = {
   'dashboard.aria.addTimezone': 'Saat dilimi ekle',
   'dashboard.aria.removeTimezone': '{city} kaldır',
   'dashboard.dayCountRequired': 'Gün sayısı gereklidir',
+  'dashboard.tripEmergencyInfo': "Acil durum kişileri (paylaşılan bağlantıda sabit, Markdown)",
+  'dashboard.tripEmergencyInfoPlaceholder': "Acentenin 7/24 numarası, yerel acil numara, otel, seyahat sigortası…",
 };
 export default dashboard;

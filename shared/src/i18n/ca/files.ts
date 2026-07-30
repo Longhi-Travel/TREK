@@ -57,5 +57,7 @@ const files: TranslationStrings = {
   'files.confirm.emptyTrash': 'Vols eliminar tots els fitxers de la paperera? No es pot desfer.',
 
   'files.uploadErrorType': 'Aquest tipus de fitxer no és compatible',
+  'files.sensitivityOn': "Protegit a l'enllaç compartit (cal codi) — feu clic per obrir",
+  'files.sensitivityOff': "Obert a l'enllaç compartit — feu clic per protegir amb el codi",
 };
 export default files;

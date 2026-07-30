@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': 'Sdíleno přes',
   'shared.confirmed': 'Potvrzeno',
   'shared.pending': 'Čeká na potvrzení',
+  'shared.website': "Web",
+  'shared.emergency': "Nouzové kontakty",
+  'shared.offlineCopy': "Offline kopie z {date}",
+  'shared.updatedBanner': "Itinerář aktualizován {date}",
+  'shared.documents': "Dokumenty",
+  'shared.sensitiveLocked': "Chráněný dokument",
+  'shared.unlockTitle': "Zadejte přístupový kód",
+  'shared.unlockHint': "O přístupový kód požádejte svou cestovní kancelář.",
+  'shared.unlock': "Odemknout",
+  'shared.unlockInvalid': "Nesprávný kód — zkuste to znovu",
+  'shared.unlockLocked': "Příliš mnoho pokusů. Zkuste to později.",
+  'shared.sourceCode': "Zdrojový kód",
+  'shared.poweredBy': "Běží na",
 };
 export default shared;

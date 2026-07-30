@@ -176,5 +176,7 @@ const dashboard: TranslationStrings = {
   'dashboard.aria.addTimezone': 'Přidat časové pásmo',
   'dashboard.aria.removeTimezone': 'Odebrat {city}',
   'dashboard.dayCountRequired': 'Počet dní je povinný',
+  'dashboard.tripEmergencyInfo': "Nouzové kontakty (připnuté ve sdíleném odkazu, Markdown)",
+  'dashboard.tripEmergencyInfoPlaceholder': "Nonstop číslo agentury, místní tísňová linka, hotel, cestovní pojištění…",
 };
 export default dashboard;
