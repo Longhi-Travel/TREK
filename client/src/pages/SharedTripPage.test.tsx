@@ -389,6 +389,60 @@ describe('SharedTripPage', () => {
     });
   });
 
+  describe('FE-PAGE-SHARED-022: place addresses deep-link to Google Maps, websites are sanitized', () => {
+    function seedPlaces(token: string, placeExtra: Record<string, unknown>) {
+      const place = {
+        id: 201, trip_id: 1, name: 'Fromagerie Laurent', lat: 48.8462, lng: 2.3372,
+        category_id: null, image_url: null, address: '52 Rue Mouffetard, Paris', ...placeExtra,
+      };
+      server.use(
+        http.get('/api/shared/:token', ({ params }) => {
+          if (params.token !== token) return;
+          return HttpResponse.json({
+            trip: { id: 1, title: 'Shared Paris Trip', start_date: '2026-07-01', end_date: '2026-07-05' },
+            days: [{ id: 101, trip_id: 1, day_number: 1, date: '2026-07-01', title: 'Day One', notes: null }],
+            assignments: { '101': [{ id: 301, day_id: 101, place_id: 201, order_index: 0, place }] },
+            dayNotes: {},
+            places: [place],
+            reservations: [],
+            accommodations: [],
+            packing: [],
+            budget: [],
+            categories: [],
+            permissions: { share_bookings: false, share_packing: false, share_budget: false, share_collab: false },
+            collab: [],
+          });
+        }),
+      );
+    }
+
+    it('renders the address as a Google Maps link at the place coordinates', async () => {
+      seedPlaces('maps-token', { website: 'https://fromagerie.example' });
+      renderSharedTrip('maps-token');
+      await waitFor(() => expect(screen.getByText('Shared Paris Trip')).toBeInTheDocument());
+      fireEvent.click(screen.getByText('Day One'));
+
+      const addr = await screen.findByText('52 Rue Mouffetard, Paris');
+      const link = addr.closest('a');
+      expect(link?.getAttribute('href')).toBe('https://www.google.com/maps/search/?api=1&query=48.8462,2.3372');
+      expect(link?.getAttribute('target')).toBe('_blank');
+
+      const site = screen.getByText('Website').closest('a');
+      expect(site?.getAttribute('href')).toBe('https://fromagerie.example');
+      expect(site?.getAttribute('rel')).toContain('noopener');
+    });
+
+    it('drops non-http(s) website schemes and prefixes scheme-less domains', async () => {
+      seedPlaces('badsite-token', { website: 'javascript:alert(1)' });
+      renderSharedTrip('badsite-token');
+      await waitFor(() => expect(screen.getByText('Shared Paris Trip')).toBeInTheDocument());
+      fireEvent.click(screen.getByText('Day One'));
+
+      await screen.findByText('52 Rue Mouffetard, Paris');
+      expect(screen.queryByText('Website')).toBeNull();
+    });
+  });
+
   describe('FE-PAGE-SHARED-014: Language picker toggles', () => {
     it('opens language dropdown and closes after selecting a language', async () => {
       renderSharedTrip('test-token');

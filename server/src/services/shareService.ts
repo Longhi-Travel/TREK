@@ -124,7 +124,7 @@ export function getSharedTripData(token: string): Record<string, any> | null {
     const ph = dayIds.map(() => '?').join(',');
     const allAssignments = db.prepare(`
       SELECT da.*, p.id as place_id, p.name as place_name, p.description as place_description,
-        p.lat, p.lng, p.address, p.category_id, p.price, p.currency as place_currency,
+        p.lat, p.lng, p.address, p.website, p.category_id, p.price, p.currency as place_currency,
         COALESCE(da.assignment_time, p.place_time) as place_time,
         COALESCE(da.assignment_end_time, p.end_time) as end_time,
         p.duration_minutes, p.notes as place_notes, p.image_url, p.transport_mode,
@@ -146,7 +146,7 @@ export function getSharedTripData(token: string): Record<string, any> | null {
         id: a.id, day_id: a.day_id, order_index: a.order_index, notes: a.notes,
         place: {
           id: a.place_id, name: a.place_name, description: a.place_description,
-          lat: a.lat, lng: a.lng, address: a.address, category_id: a.category_id,
+          lat: a.lat, lng: a.lng, address: a.address, website: a.website, category_id: a.category_id,
           price: a.price, place_time: a.place_time, end_time: a.end_time,
           image_url: rewritePlacePhotoUrl(a.image_url, token), transport_mode: a.transport_mode,
           category: a.category_id ? { id: a.category_id, name: a.category_name, color: a.category_color, icon: a.category_icon } : null,

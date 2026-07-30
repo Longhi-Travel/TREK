@@ -33,6 +33,28 @@ import { useSharedTrip } from './sharedTrip/useSharedTrip';
 
 const TRANSPORT_ICONS = { flight: Plane, train: Train, bus: Bus, car: Car, cruise: Ship };
 
+/**
+ * Google Maps deep link for a place — coordinates first (exact pin), address/name
+ * search as the fallback. Opens the native Maps app on mobile.
+ */
+function gmapsUrl(p: { lat?: number | null; lng?: number | null; address?: string | null; name?: string | null }): string | null {
+  if (p.lat != null && p.lng != null) return `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`;
+  const q = p.address || p.name;
+  return q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` : null;
+}
+
+/**
+ * Operator-entered website value → safe http(s) href. Scheme-less values get
+ * https:// prefixed; any non-http(s) scheme (javascript:, data:, …) is dropped.
+ */
+function websiteHref(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const url = String(raw).replace(/[\t\n\r]/g, '').trim();
+  if (/^https?:\/\//i.test(url)) return url;
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(url)) return null;
+  return url.includes('.') ? `https://${url}` : null;
+}
+
 function createMarkerIcon(place: any) {
   const cat = place.category;
   const color = cat?.color || 'var(--accent)';
@@ -498,22 +520,38 @@ export default function SharedTripPage() {
                           </div>
                         )}
                       </div>
-                      {dayAccs.map((acc: any) => (
-                        <span
-                          key={acc.id}
-                          className="bg-surface-tertiary text-content-muted"
-                          style={{
-                            fontSize: 'calc(9px * var(--fs-scale-caption, 1))',
-                            padding: '2px 6px',
-                            borderRadius: 4,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 3,
-                          }}
-                        >
-                          <Hotel size={8} /> {acc.place_name}
-                        </span>
-                      ))}
+                      {dayAccs.map((acc: any) => {
+                        const accMaps = gmapsUrl({ lat: acc.place_lat, lng: acc.place_lng, address: acc.place_address, name: acc.place_name });
+                        const chip = (
+                          <span
+                            className="bg-surface-tertiary text-content-muted"
+                            style={{
+                              fontSize: 'calc(9px * var(--fs-scale-caption, 1))',
+                              padding: '2px 6px',
+                              borderRadius: 4,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 3,
+                            }}
+                          >
+                            <Hotel size={8} /> {acc.place_name}
+                          </span>
+                        );
+                        return accMaps ? (
+                          <a
+                            key={acc.id}
+                            href={accMaps}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ textDecoration: 'none' }}
+                          >
+                            {chip}
+                          </a>
+                        ) : (
+                          <span key={acc.id}>{chip}</span>
+                        );
+                      })}
                       <span className="text-content-faint" style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))' }}>
                         {da.length} {t('shared.places')}
                       </span>
@@ -704,7 +742,30 @@ export default function SharedTripPage() {
                                       whiteSpace: 'nowrap',
                                     }}
                                   >
-                                    {place.address || place.description}
+                                    {place.address ? (
+                                      <a
+                                        href={gmapsUrl(place)!}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-content-muted"
+                                        style={{ textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: 2 }}
+                                      >
+                                        {place.address}
+                                      </a>
+                                    ) : (
+                                      place.description
+                                    )}
+                                    {websiteHref(place.website) && (
+                                      <a
+                                        href={websiteHref(place.website)!}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-accent-on"
+                                        style={{ marginLeft: 8, textDecoration: 'underline', textUnderlineOffset: 2 }}
+                                      >
+                                        {t('shared.website')}
+                                      </a>
+                                    )}
                                   </div>
                                 )}
                               </div>

@@ -17,5 +17,18 @@ const shared: TranslationStrings = {
   'shared.sharedVia': 'Shared via',
   'shared.confirmed': 'Confirmed',
   'shared.pending': 'Pending',
+  'shared.website': 'Website',
+  'shared.emergency': 'Emergency contacts',
+  'shared.offlineCopy': 'Offline copy from {date}',
+  'shared.updatedBanner': 'Itinerary updated {date}',
+  'shared.documents': 'Documents',
+  'shared.sensitiveLocked': 'Protected document',
+  'shared.unlockTitle': 'Enter access code',
+  'shared.unlockHint': 'Ask your travel agent for the access code.',
+  'shared.unlock': 'Unlock',
+  'shared.unlockInvalid': 'Wrong code — try again',
+  'shared.unlockLocked': 'Too many attempts. Try again later.',
+  'shared.sourceCode': 'Source Code',
+  'shared.poweredBy': 'Powered by',
 };
 export default shared;
