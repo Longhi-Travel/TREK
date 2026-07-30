@@ -332,6 +332,63 @@ describe('SharedTripPage', () => {
     });
   });
 
+  describe('FE-PAGE-SHARED-021: day.notes renders as sanitized Markdown in the expanded day', () => {
+    function seedDayNotes(token: string, notes: string) {
+      const day = { id: 101, trip_id: 1, day_number: 1, date: '2026-07-01', title: 'Day One', notes };
+      server.use(
+        http.get('/api/shared/:token', ({ params }) => {
+          if (params.token !== token) return;
+          return HttpResponse.json({
+            trip: { id: 1, title: 'Shared Paris Trip', start_date: '2026-07-01', end_date: '2026-07-05' },
+            days: [day],
+            assignments: {},
+            dayNotes: {},
+            places: [],
+            reservations: [],
+            accommodations: [],
+            packing: [],
+            budget: [],
+            categories: [],
+            permissions: { share_bookings: false, share_packing: false, share_budget: false, share_collab: false },
+            collab: [],
+          });
+        }),
+      );
+    }
+
+    it('renders a numbered Markdown route with visible list markers', async () => {
+      seedDayNotes('notes-token', '## Roteiro do Marais\n\n1. Saia do hotel\n2. Vire à esquerda\n3. Siga até a Place des Vosges');
+
+      const { container } = renderSharedTrip('notes-token');
+      await waitFor(() => expect(screen.getByText('Shared Paris Trip')).toBeInTheDocument());
+
+      fireEvent.click(screen.getByText('Day One'));
+
+      await waitFor(() => expect(screen.getByText('Roteiro do Marais')).toBeInTheDocument());
+      const ol = container.querySelector('ol');
+      expect(ol).not.toBeNull();
+      expect(ol!.style.listStyle).toContain('decimal');
+      expect(container.querySelectorAll('ol li')).toHaveLength(3);
+    });
+
+    it('keeps raw HTML and javascript: URLs inert (3b probes)', async () => {
+      seedDayNotes(
+        'xss-token',
+        '<script>alert(1)</script>\n\n<img src=x onerror=alert(1)>\n\n[click](javascript:alert(1))',
+      );
+
+      const { container } = renderSharedTrip('xss-token');
+      await waitFor(() => expect(screen.getByText('Shared Paris Trip')).toBeInTheDocument());
+
+      fireEvent.click(screen.getByText('Day One'));
+      await waitFor(() => expect(screen.getByText('click')).toBeInTheDocument());
+
+      expect(container.querySelector('script')).toBeNull();
+      expect(container.querySelector('.border-edge-faint.bg-surface-secondary img')).toBeNull();
+      expect(screen.getByText('click').closest('a[href]')).toBeNull();
+    });
+  });
+
   describe('FE-PAGE-SHARED-014: Language picker toggles', () => {
     it('opens language dropdown and closes after selecting a language', async () => {
       renderSharedTrip('test-token');
