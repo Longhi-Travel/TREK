@@ -111,8 +111,16 @@ export function getSharedTripData(token: string): Record<string, any> | null {
   const tripId = shareRow.trip_id;
 
   // Trip
-  const trip = db.prepare('SELECT id, title, description, start_date, end_date, cover_image, currency, emergency_info FROM trips WHERE id = ?').get(tripId);
+  const trip = db.prepare('SELECT id, title, description, start_date, end_date, cover_image, currency, emergency_info, updated_at FROM trips WHERE id = ?').get(tripId) as Record<string, any> | undefined;
   if (!trip) return null;
+
+  // Passive change signal: both stamps are UTC CURRENT_TIMESTAMP strings in the
+  // same format, so a lexicographic compare is a date compare. Non-null only
+  // when the itinerary changed after this share link was created.
+  const updatedSinceShare =
+    trip.updated_at && shareRow.created_at && String(trip.updated_at) > String(shareRow.created_at)
+      ? trip.updated_at
+      : null;
 
   // Days with assignments
   const days = db.prepare('SELECT * FROM days WHERE trip_id = ? ORDER BY day_number ASC').all(tripId) as any[];
@@ -241,7 +249,7 @@ export function getSharedTripData(token: string): Record<string, any> | null {
   // itinerary: days, their assignments/notes, and the place list with coordinates,
   // addresses and notes. Withhold it when the owner disabled the map.
   return {
-    trip, baseCurrency, categories, permissions,
+    trip, baseCurrency, categories, permissions, updatedSinceShare,
     days: permissions.share_map ? days : [],
     assignments: permissions.share_map ? assignments : {},
     dayNotes: permissions.share_map ? dayNotes : {},

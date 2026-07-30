@@ -425,6 +425,31 @@ export default function SharedTripPage() {
           </div>
         )}
 
+        {/* Passive "itinerary updated" banner — no identity, no contact capture */}
+        {data.updatedSinceShare && !cachedAt && (
+          <div
+            className="bg-info-soft text-info"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '8px 14px',
+              borderRadius: 10,
+              marginBottom: 14,
+              fontSize: 'calc(12px * var(--fs-scale-body, 1))',
+              fontWeight: 600,
+            }}
+          >
+            <Clock size={14} />
+            {t('shared.updatedBanner', {
+              date: new Date(String(data.updatedSinceShare).replace(' ', 'T') + 'Z').toLocaleDateString(locale, {
+                day: 'numeric',
+                month: 'short',
+              }),
+            })}
+          </div>
+        )}
+
         {/* Pinned emergency contacts */}
         {trip.emergency_info && (
           <div

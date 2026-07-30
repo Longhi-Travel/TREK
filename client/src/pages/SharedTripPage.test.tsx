@@ -497,6 +497,28 @@ describe('SharedTripPage', () => {
     });
   });
 
+  describe('FE-PAGE-SHARED-025: passive updated banner', () => {
+    it('shows the updated date when the trip changed after the link was created', async () => {
+      server.use(
+        http.get('/api/shared/:token', ({ params }) => {
+          if (params.token !== 'updated-token') return;
+          return HttpResponse.json({
+            trip: { id: 1, title: 'Shared Paris Trip', start_date: '2026-07-01', end_date: '2026-07-05' },
+            updatedSinceShare: '2026-07-29 09:30:00',
+            days: [], assignments: {}, dayNotes: {}, places: [], reservations: [],
+            accommodations: [], packing: [], budget: [], categories: [],
+            permissions: { share_bookings: false, share_packing: false, share_budget: false, share_collab: false },
+            collab: [],
+          });
+        }),
+      );
+
+      renderSharedTrip('updated-token');
+      await waitFor(() => expect(screen.getByText('Shared Paris Trip')).toBeInTheDocument());
+      expect(screen.getByText(/Itinerary updated/)).toBeInTheDocument();
+    });
+  });
+
   describe('FE-PAGE-SHARED-014: Language picker toggles', () => {
     it('opens language dropdown and closes after selecting a language', async () => {
       renderSharedTrip('test-token');

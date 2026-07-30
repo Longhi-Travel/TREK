@@ -3710,6 +3710,32 @@ function runMigrations(db: Database.Database): void {
         if (!err.message?.includes('duplicate column name')) throw err;
       }
     },
+    () => {
+      // Bump trips.updated_at whenever shared-page content changes, so a share
+      // link can show a passive "itinerary updated <date>" banner. Trip-row
+      // edits already stamp updated_at in updateTrip; these triggers extend
+      // that to the child tables the public snapshot is built from.
+      const viaTripId = ['days', 'day_notes', 'places', 'reservations', 'day_accommodations'];
+      for (const t of viaTripId) {
+        db.exec(`
+          CREATE TRIGGER IF NOT EXISTS trg_touch_trip_${t}_i AFTER INSERT ON ${t}
+            BEGIN UPDATE trips SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.trip_id; END;
+          CREATE TRIGGER IF NOT EXISTS trg_touch_trip_${t}_u AFTER UPDATE ON ${t}
+            BEGIN UPDATE trips SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.trip_id; END;
+          CREATE TRIGGER IF NOT EXISTS trg_touch_trip_${t}_d AFTER DELETE ON ${t}
+            BEGIN UPDATE trips SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.trip_id; END;
+        `);
+      }
+      // day_assignments carries no trip_id — resolve it through the day row.
+      db.exec(`
+        CREATE TRIGGER IF NOT EXISTS trg_touch_trip_day_assignments_i AFTER INSERT ON day_assignments
+          BEGIN UPDATE trips SET updated_at = CURRENT_TIMESTAMP WHERE id = (SELECT trip_id FROM days WHERE id = NEW.day_id); END;
+        CREATE TRIGGER IF NOT EXISTS trg_touch_trip_day_assignments_u AFTER UPDATE ON day_assignments
+          BEGIN UPDATE trips SET updated_at = CURRENT_TIMESTAMP WHERE id = (SELECT trip_id FROM days WHERE id = NEW.day_id); END;
+        CREATE TRIGGER IF NOT EXISTS trg_touch_trip_day_assignments_d AFTER DELETE ON day_assignments
+          BEGIN UPDATE trips SET updated_at = CURRENT_TIMESTAMP WHERE id = (SELECT trip_id FROM days WHERE id = OLD.day_id); END;
+      `);
+    },
   ];
 
   if (currentVersion < migrations.length) {
