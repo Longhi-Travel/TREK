@@ -28,6 +28,7 @@ import { isDayInAccommodationRange } from '../utils/dayOrder';
 import { getFlightLegs, getTrainLegs } from '../utils/flightLegs';
 import { splitReservationDateTime } from '../utils/formatters';
 import { computeMapViewport, TILE_SIZE_RASTER } from '../utils/mapViewport';
+import SharedMarkdown from './sharedTrip/SharedMarkdown';
 import { useSharedTrip } from './sharedTrip/useSharedTrip';
 
 const TRANSPORT_ICONS = { flight: Plane, train: Train, bus: Bus, car: Car, cruise: Ship };
@@ -518,7 +519,7 @@ export default function SharedTripPage() {
                       </span>
                     </div>
 
-                    {selectedDay === day.id && merged.length > 0 && (
+                    {selectedDay === day.id && (merged.length > 0 || day.notes) && (
                       <div style={{ padding: '0 16px 12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {merged.map((item: any) => {
                           if (item.type === 'transport') {
@@ -726,6 +727,14 @@ export default function SharedTripPage() {
                             </div>
                           );
                         })}
+                        {day.notes && (
+                          <div
+                            className="border border-edge-faint bg-surface-secondary"
+                            style={{ borderRadius: 10, padding: '10px 14px', marginTop: merged.length > 0 ? 4 : 0 }}
+                          >
+                            <SharedMarkdown text={day.notes} />
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
