@@ -66,6 +66,17 @@ export function useSharedTrip() {
     // this one stuck in `waiting` behind the PWA worker forever. With distinct
     // scopes the longest match wins, so shared pages get this worker and the
     // authenticated PWA keeps its own.
+    // Self-heal: an earlier build registered this worker at '/', where it
+    // displaced the app's own PWA worker. Drop any root-scoped registration of
+    // ours so a browser that loaded that build gets the app's worker back
+    // instead of keeping a wrongly-scoped one forever.
+    navigator.serviceWorker.getRegistrations().then((regs) => {
+      for (const r of regs) {
+        const script = r.active?.scriptURL || r.waiting?.scriptURL || r.installing?.scriptURL || ''
+        if (script.endsWith('/shared-sw.js') && !r.scope.endsWith('/shared/')) r.unregister().catch(() => {})
+      }
+    }).catch(() => {})
+
     navigator.serviceWorker
       .register('/shared-sw.js', { scope: '/shared/' })
       .then((reg) => {
