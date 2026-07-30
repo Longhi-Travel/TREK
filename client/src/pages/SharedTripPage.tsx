@@ -47,15 +47,21 @@ function gmapsUrl(p: { lat?: number | null; lng?: number | null; address?: strin
 }
 
 /**
- * Emergency contacts are authored as plain text; auto-wrap phone-shaped runs
- * (8+ digits, optional +, spaces/dots/dashes/parens) in tel: links so they are
- * one tap to call. Text already inside a Markdown link is left untouched.
+ * Emergency contacts are authored as plain text; auto-wrap phone-shaped runs in
+ * tel: links so they are one tap to call. Text already inside a Markdown link is
+ * left untouched.
+ *
+ * A run qualifies only if it carries an international prefix (+) or has at least
+ * 10 digits. Without that bar, reference numbers sitting in the same block get
+ * linkified too — an insurance policy like "4471-9920" became a phone number
+ * the traveler could tap and dial.
  */
 function linkifyPhones(md: string): string {
   const processSegment = (s: string) =>
     s.replace(/\+?\d[\d\s().-]{6,}\d/g, (raw) => {
       const digits = raw.replace(/[^\d+]/g, '');
-      if (digits.replace(/\D/g, '').length < 8) return raw;
+      const count = digits.replace(/\D/g, '').length;
+      if (!(digits.startsWith('+') ? count >= 8 : count >= 10)) return raw;
       return `[${raw.trim()}](tel:${digits})`;
     });
   const linkRe = /\[[^\]]*\]\([^)]*\)/g;

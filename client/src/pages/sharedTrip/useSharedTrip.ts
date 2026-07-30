@@ -60,8 +60,14 @@ export function useSharedTrip() {
   useEffect(() => {
     if (!token || !data || typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return
     let cancelled = false
+    // Scope to /shared/ — narrower than the script's own location, which is
+    // allowed, and crucially narrower than the app's workbox worker at '/'.
+    // Two workers cannot both be active on one scope: registering at '/' left
+    // this one stuck in `waiting` behind the PWA worker forever. With distinct
+    // scopes the longest match wins, so shared pages get this worker and the
+    // authenticated PWA keeps its own.
     navigator.serviceWorker
-      .register('/shared-sw.js')
+      .register('/shared-sw.js', { scope: '/shared/' })
       .then((reg) => {
         if (cancelled) return
         const target = reg.active || reg.waiting || reg.installing

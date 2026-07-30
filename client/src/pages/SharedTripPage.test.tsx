@@ -471,6 +471,32 @@ describe('SharedTripPage', () => {
       expect(container.querySelector('a[href="tel:112"]')).toBeNull();
       expect(screen.getByText(/112/)).toBeInTheDocument();
     });
+
+    it('does not linkify reference numbers that sit in the same block', async () => {
+      server.use(
+        http.get('/api/shared/:token', ({ params }) => {
+          if (params.token !== 'policy-token') return;
+          return HttpResponse.json({
+            trip: {
+              id: 1, title: 'Shared Paris Trip', start_date: '2026-07-01', end_date: '2026-07-05',
+              emergency_info: 'Seguro viagem: apólice 4471-9920 · +55 11 3049-0000',
+            },
+            days: [], assignments: {}, dayNotes: {}, places: [], reservations: [],
+            accommodations: [], packing: [], budget: [], categories: [],
+            permissions: { share_bookings: false, share_packing: false, share_budget: false, share_collab: false },
+            collab: [],
+          });
+        }),
+      );
+
+      const { container } = renderSharedTrip('policy-token');
+      await waitFor(() => expect(screen.getByText('Shared Paris Trip')).toBeInTheDocument());
+
+      // The real phone linkifies; the 8-digit policy number must stay plain text.
+      expect(container.querySelector('a[href="tel:+551130490000"]')).not.toBeNull();
+      expect(container.querySelector('a[href="tel:44719920"]')).toBeNull();
+      expect(screen.getByText(/4471-9920/)).toBeInTheDocument();
+    });
   });
 
   describe('FE-PAGE-SHARED-024: offline banner when the snapshot comes from the SW cache', () => {
