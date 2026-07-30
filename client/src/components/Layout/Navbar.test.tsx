@@ -10,6 +10,7 @@ import { usePluginStore } from '../../store/pluginStore';
 import { resetAllStores, seedStore } from '../../../tests/helpers/store';
 import { buildUser, buildSettings } from '../../../tests/helpers/factories';
 import Navbar from './Navbar';
+import { resetBrandingCache } from '../../hooks/useBranding';
 
 beforeEach(() => {
   resetAllStores();
@@ -321,5 +322,38 @@ describe('Navbar', () => {
     });
     const { container } = render(<Navbar />);
     expect(container.querySelector('.lucide-blocks')).not.toBeNull();
+  });
+
+  describe('FE-COMP-NAVBAR-036: upstream community link is white-labeled away', () => {
+    // The dropdown is not inside render()'s container, and the navbar has its
+    // own alt="TREK" logo — so query the document and match the wordmark by src.
+    const wordmark = () => document.querySelector('img[src="/text-light.svg"], img[src="/text-dark.svg"]');
+    const discord = () => document.querySelector('a[href*="discord.gg"]');
+
+    it('shows the TREK wordmark and Discord link on a stock install', async () => {
+      resetBrandingCache();
+      server.use(http.get('/api/branding', () => HttpResponse.json({})));
+      const user = userEvent.setup();
+      render(<Navbar />);
+      await user.click(screen.getByText('testuser'));
+
+      await waitFor(() => expect(screen.getByText('v2.9.10')).toBeInTheDocument());
+      expect(discord()).not.toBeNull();
+      expect(wordmark()).not.toBeNull();
+    });
+
+    it('replaces the wordmark with the brand and drops Discord when branded', async () => {
+      resetBrandingCache();
+      server.use(http.get('/api/branding', () => HttpResponse.json({ name: 'Longhi Travel' })));
+      const user = userEvent.setup();
+      render(<Navbar />);
+      await user.click(screen.getByText('testuser'));
+
+      await waitFor(() => expect(screen.getByText('Longhi Travel')).toBeInTheDocument());
+      expect(discord()).toBeNull();
+      expect(wordmark()).toBeNull();
+      // The version itself is still useful to the operator — keep it.
+      expect(screen.getByText('v2.9.10')).toBeInTheDocument();
+    });
   });
 });
