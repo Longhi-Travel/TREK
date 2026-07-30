@@ -118,6 +118,7 @@ export default function SharedTripPage() {
     data,
     error,
     cachedAt,
+    brand,
     base,
     convert,
     selectedDay,
@@ -195,13 +196,22 @@ export default function SharedTripPage() {
   });
   const initialView = framed ?? { center: DEFAULT_MAP_CENTER, zoom: DEFAULT_MAP_ZOOM };
 
+  // White-label overrides (BRAND_* env on the server). Every fallback below is
+  // the stock TREK value, so an unbranded install renders byte-identically.
+  const headerBg = brand.headerBg || 'linear-gradient(135deg, #000 0%, #0f172a 50%, #1e293b 100%)';
+  const budgetBg = brand.headerBg || 'linear-gradient(135deg, #000 0%, #1a1a2e 100%)';
+  const brandVars = {
+    ...(brand.accent ? { '--accent': brand.accent, '--accent-on': brand.accent, '--accent-hover': brand.accent } : {}),
+    ...(brand.displayFont ? { '--brand-display-font': brand.displayFont } : {}),
+  } as React.CSSProperties;
+
   return (
-    <div className="bg-surface-secondary" style={{ minHeight: '100vh', fontFamily: 'var(--font-system)' }}>
+    <div className="bg-surface-secondary" style={{ minHeight: '100vh', fontFamily: 'var(--font-system)', ...brandVars }}>
       {/* Header */}
       <div
         className="text-white"
         style={{
-          background: 'linear-gradient(135deg, #000 0%, #0f172a 50%, #1e293b 100%)',
+          background: headerBg,
           padding: '32px 20px 28px',
           textAlign: 'center',
           position: 'relative',
@@ -245,7 +255,7 @@ export default function SharedTripPage() {
             border: '1px solid rgba(255,255,255,0.1)',
           }}
         >
-          <img src="/icons/icon-white.svg" alt="TREK" width="26" height="26" />
+          <img src={brand.logoUrl || '/icons/icon-white.svg'} alt={brand.name || 'TREK'} width="26" height="26" />
         </div>
 
         <div
@@ -254,11 +264,13 @@ export default function SharedTripPage() {
             fontWeight: 600,
             letterSpacing: 3,
             textTransform: 'uppercase',
-            opacity: 0.35,
+            opacity: brand.tagline ? 0.85 : 0.35,
             marginBottom: 12,
+            fontFamily: 'var(--brand-display-font, inherit)',
+            ...(brand.tagline && brand.accent ? { color: brand.accent } : {}),
           }}
         >
-          Travel Resource & Exploration Kit
+          {brand.tagline || 'Travel Resource & Exploration Kit'}
         </div>
 
         <h1
@@ -267,6 +279,7 @@ export default function SharedTripPage() {
             fontSize: 'calc(26px * var(--fs-scale-title, 1))',
             fontWeight: 700,
             letterSpacing: -0.5,
+            fontFamily: 'var(--brand-display-font, inherit)',
           }}
         >
           {trip.title}
@@ -1089,7 +1102,7 @@ export default function SharedTripPage() {
                 <div
                   className="text-white"
                   style={{
-                    background: 'linear-gradient(135deg, #000 0%, #1a1a2e 100%)',
+                    background: budgetBg,
                     borderRadius: 14,
                     padding: '20px 24px',
                   }}
@@ -1299,17 +1312,32 @@ export default function SharedTripPage() {
               boxShadow: 'var(--shadow-sm)',
             }}
           >
-            <img src="/icons/icon.svg" alt="TREK" width="18" height="18" style={{ borderRadius: 4 }} />
+            <img src={brand.logoUrl || '/icons/icon.svg'} alt={brand.name || 'TREK'} width="18" height="18" style={{ borderRadius: 4 }} />
             <span className="text-content-faint" style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))' }}>
-              {t('shared.sharedVia')} <strong className="text-content-muted">TREK</strong>
+              {t('shared.sharedVia')} <strong className="text-content-muted">{brand.name || 'TREK'}</strong>
             </span>
           </div>
-          <div className="text-content-faint" style={{ marginTop: 8, fontSize: 'calc(10px * var(--fs-scale-caption, 1))' }}>
-            Made with <span className="text-danger">&hearts;</span> by Maurice ·{' '}
-            <a href="https://github.com/liketrek/TREK" className="text-content-faint" style={{ textDecoration: 'none' }}>
-              GitHub
-            </a>
-          </div>
+          {brand.name ? (
+            // Branded install: credit the substrate and satisfy AGPL §13 — the
+            // source link points at THIS deployment's corresponding source.
+            <div className="text-content-faint" style={{ marginTop: 8, fontSize: 'calc(10px * var(--fs-scale-caption, 1))' }}>
+              {t('shared.poweredBy')} TREK ·{' '}
+              <a
+                href={brand.sourceUrl || 'https://github.com/liketrek/TREK'}
+                className="text-content-faint"
+                style={{ textDecoration: 'underline', textUnderlineOffset: 2 }}
+              >
+                {t('shared.sourceCode')}
+              </a>
+            </div>
+          ) : (
+            <div className="text-content-faint" style={{ marginTop: 8, fontSize: 'calc(10px * var(--fs-scale-caption, 1))' }}>
+              Made with <span className="text-danger">&hearts;</span> by Maurice ·{' '}
+              <a href="https://github.com/liketrek/TREK" className="text-content-faint" style={{ textDecoration: 'none' }}>
+                GitHub
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,7 +1,17 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { shareApi } from '../../api/client'
+import { brandingApi, shareApi } from '../../api/client'
 import { useExchangeRates } from '../../hooks/useExchangeRates'
+
+export interface SharedBranding {
+  name?: string
+  tagline?: string
+  logoUrl?: string
+  accent?: string
+  headerBg?: string
+  displayFont?: string
+  sourceUrl?: string
+}
 
 /**
  * Shared-trip (public) data hook — owns the token lookup, the read-only share
@@ -20,15 +30,23 @@ export function useSharedTrip() {
   // the page shows a "cached copy from <date>" banner so nobody acts on stale
   // emergency contacts without knowing.
   const [cachedAt, setCachedAt] = useState<string | null>(null)
+  // Env-driven white-label branding; {} on a stock install (or when the fetch
+  // fails) so every consumer falls back to stock TREK appearance.
+  const [brand, setBrand] = useState<SharedBranding>({})
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState('plan')
   const [showLangPicker, setShowLangPicker] = useState(false)
 
   useEffect(() => {
     if (!token) return
-    shareApi
-      .getSharedTripCached(token)
-      .then(({ data, cachedAt }) => {
+    // Branding resolves with the snapshot so the hero paints branded on first
+    // render instead of flashing stock TREK.
+    Promise.all([
+      shareApi.getSharedTripCached(token),
+      brandingApi.get().catch(() => ({}) as Record<string, string>),
+    ])
+      .then(([{ data, cachedAt }, branding]) => {
+        setBrand(branding || {})
         setData(data)
         setCachedAt(cachedAt)
       })
@@ -95,5 +113,5 @@ export function useSharedTrip() {
   const base = String(data?.baseCurrency || data?.trip?.currency || 'EUR').toUpperCase()
   const { convert } = useExchangeRates(base)
 
-  return { data, error, cachedAt, base, convert, selectedDay, setSelectedDay, activeTab, setActiveTab, showLangPicker, setShowLangPicker }
+  return { data, error, cachedAt, brand, base, convert, selectedDay, setSelectedDay, activeTab, setActiveTab, showLangPicker, setShowLangPicker }
 }

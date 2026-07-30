@@ -3,6 +3,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 
 import { verifyJwtAndLoadUser } from '../../middleware/auth';
+import { BRANDING, brandedIndexHtml } from '../../services/branding';
 import { db } from '../../db/database';
 import { mcpHandler } from '../../mcp';
 import { trekOAuthProvider, trekClientsStore } from '../../mcp/oauthProvider';
@@ -242,6 +243,11 @@ export function applyPlatformSpa(app: express.Application): void {
   // /.*/ rather than '*' so the helper is Express-4 and Express-5 safe.
   app.get(/.*/, (_req: Request, res: Response) => {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    const branded = brandedIndexHtml(PUBLIC_DIR);
+    if (branded) {
+      res.type('html').send(branded);
+      return;
+    }
     res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
   });
 }
@@ -255,6 +261,22 @@ export function applyPlatformSpa(app: express.Application): void {
  */
 export function applyPlatformStatic(app: express.Application): void {
   if (process.env.NODE_ENV !== 'production') return;
+  // White-label overrides (BRAND_ASSETS_DIR): any file present there shadows
+  // the same-named file in the built client (favicon, /icons/*, the /logo-*.svg
+  // the PDF export embeds). Missing files fall through to the stock build, so
+  // an unset/partial dir never changes stock behaviour.
+  if (BRANDING.assetsDir) {
+    app.use(express.static(BRANDING.assetsDir, { fallthrough: true, index: false }));
+  }
+  const branded = brandedIndexHtml(PUBLIC_DIR);
+  if (branded) {
+    const sendBranded = (_req: Request, res: Response) => {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.type('html').send(branded);
+    };
+    app.get('/', sendBranded);
+    app.get('/index.html', sendBranded);
+  }
   app.use(
     express.static(PUBLIC_DIR, {
       setHeaders: (res, filePath) => {

@@ -999,6 +999,11 @@ export const shareApi = {
     })),
 }
 
+// Public white-label branding — env-driven on the server, {} on a stock install.
+export const brandingApi = {
+  get: () => apiClient.get('/branding').then(r => r.data as Record<string, string>),
+}
+
 // Public transit routing (#1065) — Transitous/MOTIS proxied through the server.
 export const transitApi = {
   geocode: (q: string, opts?: { lang?: string; near?: string }) =>

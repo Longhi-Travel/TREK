@@ -519,6 +519,49 @@ describe('SharedTripPage', () => {
     });
   });
 
+  describe('FE-PAGE-SHARED-026: white-label branding with exact stock fallback', () => {
+    it('applies BRAND_* values to hero, accent and footer, with an AGPL source link', async () => {
+      server.use(
+        http.get('/api/branding', () =>
+          HttpResponse.json({
+            name: 'Longhi Travel',
+            tagline: 'Roteiros sob medida',
+            logoUrl: '/brand/hero.svg',
+            accent: '#C9A227',
+            headerBg: 'linear-gradient(135deg, #080D1C 0%, #101A38 55%, #1C2A55 100%)',
+            sourceUrl: 'https://github.com/Longhi-Travel/TREK',
+          }),
+        ),
+      );
+
+      const { container } = renderSharedTrip('test-token');
+      await waitFor(() => expect(screen.getByText('Shared Paris Trip')).toBeInTheDocument());
+
+      expect(screen.getByText('Roteiros sob medida')).toBeInTheDocument();
+      expect(screen.queryByText('Travel Resource & Exploration Kit')).toBeNull();
+      expect(screen.getByText('Longhi Travel')).toBeInTheDocument();
+      expect(screen.getAllByAltText('Longhi Travel')[0].getAttribute('src')).toBe('/brand/hero.svg');
+
+      const source = screen.getByText('Source Code').closest('a');
+      expect(source?.getAttribute('href')).toBe('https://github.com/Longhi-Travel/TREK');
+      expect(screen.queryByText(/Made with/)).toBeNull();
+
+      const root = container.querySelector('.bg-surface-secondary') as HTMLElement;
+      expect(root.style.getPropertyValue('--accent')).toBe('#C9A227');
+    });
+
+    it('renders exact stock TREK appearance when no branding is set', async () => {
+      renderSharedTrip('test-token');
+      await waitFor(() => expect(screen.getByText('Shared Paris Trip')).toBeInTheDocument());
+
+      expect(screen.getByText('Travel Resource & Exploration Kit')).toBeInTheDocument();
+      expect(screen.getByText('TREK')).toBeInTheDocument();
+      expect(screen.getByText(/Made with/)).toBeInTheDocument();
+      expect(screen.getAllByAltText('TREK')[0].getAttribute('src')).toBe('/icons/icon-white.svg');
+      expect(screen.queryByText('Source Code')).toBeNull();
+    });
+  });
+
   describe('FE-PAGE-SHARED-014: Language picker toggles', () => {
     it('opens language dropdown and closes after selecting a language', async () => {
       renderSharedTrip('test-token');

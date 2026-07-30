@@ -2,6 +2,9 @@ import { http, HttpResponse } from 'msw';
 import { buildTrip, buildDay, buildPlace } from '../../factories';
 
 export const sharedHandlers = [
+  // Stock install: no white-label branding configured.
+  http.get('/api/branding', () => HttpResponse.json({})),
+
   http.get('/api/shared/:token', ({ params }) => {
     const { token } = params;
 

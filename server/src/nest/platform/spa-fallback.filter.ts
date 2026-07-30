@@ -2,6 +2,7 @@ import { ArgumentsHost, Catch, ExceptionFilter, NotFoundException } from '@nestj
 import type { Request, Response } from 'express';
 import path from 'node:path';
 import { PUBLIC_DIR } from './platform.routes';
+import { brandedIndexHtml } from '../../services/branding';
 
 /**
  * Serves the built SPA (index.html) for any request the NestJS router did not
@@ -26,6 +27,11 @@ export class SpaFallbackFilter implements ExceptionFilter {
 
     if (process.env.NODE_ENV === 'production' && req.method === 'GET') {
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      const branded = brandedIndexHtml(PUBLIC_DIR);
+      if (branded) {
+        res.type('html').send(branded);
+        return;
+      }
       res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
       return;
     }
