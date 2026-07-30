@@ -219,6 +219,7 @@ interface UpdateTripData {
   reminder_days?: number;
   day_count?: number;
   date_shift_mode?: 'keep_bookings' | 'shift_all';
+  emergency_info?: string | null;
 }
 
 export interface UpdateTripResult {
@@ -235,7 +236,10 @@ export function updateTrip(tripId: string | number, userId: number, data: Update
   const trip = db.prepare('SELECT * FROM trips WHERE id = ?').get(tripId) as Trip & { reminder_days?: number } | undefined;
   if (!trip) throw new NotFoundError('Trip not found');
 
-  const { title, description, start_date, end_date, currency, is_archived, cover_image, reminder_days } = data;
+  const { title, description, start_date, end_date, currency, is_archived, cover_image, reminder_days, emergency_info } = data;
+
+  if (emergency_info !== undefined && emergency_info !== null && String(emergency_info).length > 10000)
+    throw new ValidationError('Emergency info is limited to 10,000 characters');
 
   if (start_date && end_date && new Date(end_date) < new Date(start_date))
     throw new ValidationError('End date must be after start date');
@@ -247,6 +251,7 @@ export function updateTrip(tripId: string | number, userId: number, data: Update
   const newCurrency = currency || trip.currency;
   const newArchived = is_archived !== undefined ? (is_archived ? 1 : 0) : trip.is_archived;
   const newCover = cover_image !== undefined ? cover_image : trip.cover_image;
+  const newEmergency = emergency_info !== undefined ? (emergency_info || null) : (trip as any).emergency_info ?? null;
   const oldReminder = (trip as any).reminder_days ?? 3;
   const newReminder = reminder_days !== undefined
     ? (Number(reminder_days) >= 0 && Number(reminder_days) <= 30 ? Number(reminder_days) : oldReminder)
@@ -254,9 +259,9 @@ export function updateTrip(tripId: string | number, userId: number, data: Update
 
   db.prepare(`
     UPDATE trips SET title=?, description=?, start_date=?, end_date=?,
-      currency=?, is_archived=?, cover_image=?, reminder_days=?, updated_at=CURRENT_TIMESTAMP
+      currency=?, is_archived=?, cover_image=?, reminder_days=?, emergency_info=?, updated_at=CURRENT_TIMESTAMP
     WHERE id=?
-  `).run(newTitle, newDesc, newStart || null, newEnd || null, newCurrency, newArchived, newCover, newReminder, tripId);
+  `).run(newTitle, newDesc, newStart || null, newEnd || null, newCurrency, newArchived, newCover, newReminder, newEmergency, tripId);
 
   if (trip.start_date && trip.end_date && newStart && newStart !== trip.start_date)
     shiftOwnerEntriesForTripWindow(trip.user_id, trip.start_date, trip.end_date, newStart);

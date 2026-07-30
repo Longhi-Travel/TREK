@@ -3701,6 +3701,15 @@ function runMigrations(db: Database.Database): void {
       `);
       db.exec('CREATE INDEX IF NOT EXISTS idx_hidden_regions_user ON hidden_regions (user_id);');
     },
+    () => {
+      // Trip-level emergency contacts (Markdown) — rendered pinned on the
+      // public shared page and precached for offline use.
+      try {
+        db.exec('ALTER TABLE trips ADD COLUMN emergency_info TEXT');
+      } catch (err: any) {
+        if (!err.message?.includes('duplicate column name')) throw err;
+      }
+    },
   ];
 
   if (currentVersion < migrations.length) {

@@ -62,6 +62,8 @@ const dashboard: TranslationStrings = {
   'dashboard.tripTitle': 'Título',
   'dashboard.tripTitlePlaceholder': 'ex.: Verão no Japão',
   'dashboard.tripDescription': 'Descrição',
+  'dashboard.tripEmergencyInfo': 'Contatos de emergência (fixados no link compartilhado, Markdown)',
+  'dashboard.tripEmergencyInfoPlaceholder': 'Telefone 24h da agência, emergência local, hotel, seguro viagem…',
   'dashboard.tripDescriptionPlaceholder': 'Sobre o que é esta viagem?',
   'dashboard.startDate': 'Data de início',
   'dashboard.endDate': 'Data de término',

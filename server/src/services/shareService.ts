@@ -111,7 +111,7 @@ export function getSharedTripData(token: string): Record<string, any> | null {
   const tripId = shareRow.trip_id;
 
   // Trip
-  const trip = db.prepare('SELECT id, title, description, start_date, end_date, cover_image, currency FROM trips WHERE id = ?').get(tripId);
+  const trip = db.prepare('SELECT id, title, description, start_date, end_date, cover_image, currency, emergency_info FROM trips WHERE id = ?').get(tripId);
   if (!trip) return null;
 
   // Days with assignments

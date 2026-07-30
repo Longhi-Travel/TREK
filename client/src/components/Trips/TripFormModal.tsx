@@ -51,6 +51,7 @@ export default function TripFormModal({ isOpen, onClose, onSave, trip, onCoverUp
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    emergency_info: '',
     start_date: '',
     end_date: '',
     currency: 'EUR',
@@ -83,6 +84,7 @@ export default function TripFormModal({ isOpen, onClose, onSave, trip, onCoverUp
       setFormData({
         title: trip.title || '',
         description: trip.description || '',
+        emergency_info: (trip as { emergency_info?: string | null }).emergency_info || '',
         start_date: trip.start_date || '',
         end_date: trip.end_date || '',
         currency: trip.currency || 'EUR',
@@ -93,7 +95,7 @@ export default function TripFormModal({ isOpen, onClose, onSave, trip, onCoverUp
       setCoverPreview(trip.cover_image || null)
       setCoverSearchQuery('')
     } else {
-      setFormData({ title: '', description: '', start_date: '', end_date: '', currency: 'EUR', reminder_days: tripRemindersEnabled ? 3 : 0, day_count: 7 })
+      setFormData({ title: '', description: '', emergency_info: '', start_date: '', end_date: '', currency: 'EUR', reminder_days: tripRemindersEnabled ? 3 : 0, day_count: 7 })
       setCustomReminder(false)
       setCoverPreview(null)
       setCoverSearchQuery('')
@@ -141,6 +143,7 @@ export default function TripFormModal({ isOpen, onClose, onSave, trip, onCoverUp
     const payload: TripCreateRequest & { date_shift_mode?: DateShiftMode } = {
       title: formData.title.trim(),
       description: formData.description.trim() || null,
+      emergency_info: formData.emergency_info.trim() || null,
       start_date: formData.start_date || null,
       end_date: formData.end_date || null,
       currency: formData.currency,
@@ -480,6 +483,13 @@ export default function TripFormModal({ isOpen, onClose, onSave, trip, onCoverUp
           <label className="block text-sm font-medium text-slate-700 mb-1.5">{t('dashboard.tripDescription')}</label>
           <textarea value={formData.description} onChange={e => canEditTrip && update('description', e.target.value)}
             readOnly={!canEditTrip} placeholder={t('dashboard.tripDescriptionPlaceholder')} rows={3}
+            className={`${inputCls} resize-none`} />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1.5">{t('dashboard.tripEmergencyInfo')}</label>
+          <textarea value={formData.emergency_info} onChange={e => canEditTrip && update('emergency_info', e.target.value)}
+            readOnly={!canEditTrip} placeholder={t('dashboard.tripEmergencyInfoPlaceholder')} rows={4}
             className={`${inputCls} resize-none`} />
         </div>
 

@@ -3,12 +3,14 @@ import {
   Bus,
   Car,
   Clock,
+  CloudOff,
   FileText,
   Hotel,
   Luggage,
   Map,
   MapPin,
   MessageCircle,
+  Phone,
   Plane,
   Ship,
   Ticket,
@@ -41,6 +43,29 @@ function gmapsUrl(p: { lat?: number | null; lng?: number | null; address?: strin
   if (p.lat != null && p.lng != null) return `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`;
   const q = p.address || p.name;
   return q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` : null;
+}
+
+/**
+ * Emergency contacts are authored as plain text; auto-wrap phone-shaped runs
+ * (8+ digits, optional +, spaces/dots/dashes/parens) in tel: links so they are
+ * one tap to call. Text already inside a Markdown link is left untouched.
+ */
+function linkifyPhones(md: string): string {
+  const processSegment = (s: string) =>
+    s.replace(/\+?\d[\d\s().-]{6,}\d/g, (raw) => {
+      const digits = raw.replace(/[^\d+]/g, '');
+      if (digits.replace(/\D/g, '').length < 8) return raw;
+      return `[${raw.trim()}](tel:${digits})`;
+    });
+  const linkRe = /\[[^\]]*\]\([^)]*\)/g;
+  let out = '';
+  let last = 0;
+  let m: RegExpExecArray | null;
+  while ((m = linkRe.exec(md))) {
+    out += processSegment(md.slice(last, m.index)) + m[0];
+    last = m.index + m[0].length;
+  }
+  return out + processSegment(md.slice(last));
 }
 
 /**
@@ -92,6 +117,7 @@ export default function SharedTripPage() {
   const {
     data,
     error,
+    cachedAt,
     base,
     convert,
     selectedDay,
@@ -377,6 +403,60 @@ export default function SharedTripPage() {
       </div>
 
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '20px 16px' }}>
+        {/* Offline indicator — the snapshot came from the service-worker cache */}
+        {cachedAt && (
+          <div
+            className="bg-warning-soft text-warning"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '8px 14px',
+              borderRadius: 10,
+              marginBottom: 14,
+              fontSize: 'calc(12px * var(--fs-scale-body, 1))',
+              fontWeight: 600,
+            }}
+          >
+            <CloudOff size={14} />
+            {t('shared.offlineCopy', {
+              date: new Date(cachedAt).toLocaleDateString(locale, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
+            })}
+          </div>
+        )}
+
+        {/* Pinned emergency contacts */}
+        {trip.emergency_info && (
+          <div
+            className="bg-surface-card"
+            style={{
+              border: '1px solid var(--border-primary)',
+              borderLeft: '4px solid var(--danger)',
+              borderRadius: 14,
+              padding: '12px 16px',
+              marginBottom: 16,
+              boxShadow: 'var(--shadow-sm)',
+            }}
+          >
+            <div
+              className="text-content"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                fontSize: 'calc(11px * var(--fs-scale-caption, 1))',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                marginBottom: 6,
+              }}
+            >
+              <Phone size={13} color="var(--danger)" /> {t('shared.emergency')}
+            </div>
+            <SharedMarkdown text={linkifyPhones(trip.emergency_info)} />
+          </div>
+        )}
+
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 6, marginBottom: 20, overflowX: 'auto', padding: '2px 0' }}>
           {[

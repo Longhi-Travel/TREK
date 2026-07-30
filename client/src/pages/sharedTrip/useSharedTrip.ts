@@ -16,14 +16,63 @@ export function useSharedTrip() {
   // matched 1:1 from the public share endpoint — kept loosely typed as before.
   const [data, setData] = useState<any>(null)
   const [error, setError] = useState(false)
+  // Non-null when the snapshot came from the offline service-worker cache —
+  // the page shows a "cached copy from <date>" banner so nobody acts on stale
+  // emergency contacts without knowing.
+  const [cachedAt, setCachedAt] = useState<string | null>(null)
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState('plan')
   const [showLangPicker, setShowLangPicker] = useState(false)
 
   useEffect(() => {
     if (!token) return
-    shareApi.getSharedTrip(token).then(setData).catch(() => setError(true))
+    shareApi
+      .getSharedTripCached(token)
+      .then(({ data, cachedAt }) => {
+        setData(data)
+        setCachedAt(cachedAt)
+      })
+      .catch(() => setError(true))
   }, [token])
+
+  // Offline support: register the shared-page service worker and, once the
+  // snapshot is in, ask it to precache the shell + hashed assets + trip JSON so
+  // the itinerary (and its pinned emergency block) survives airplane mode from
+  // the very first visit.
+  useEffect(() => {
+    if (!token || !data || typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return
+    let cancelled = false
+    navigator.serviceWorker
+      .register('/shared-sw.js')
+      .then((reg) => {
+        if (cancelled) return
+        const target = reg.active || reg.waiting || reg.installing
+        const send = (sw: ServiceWorker | null) => {
+          if (!sw) return
+          const assets = performance
+            .getEntriesByType('resource')
+            .map((e) => e.name)
+            .filter((u) => {
+              try {
+                const p = new URL(u, location.origin)
+                return p.origin === location.origin && /^\/(assets|icons|fonts)\//.test(p.pathname)
+              } catch {
+                return false
+              }
+            })
+          sw.postMessage({
+            type: 'precache',
+            urls: [location.pathname, `/api/shared/${token}`, '/api/branding', ...assets],
+          })
+        }
+        if (target && target.state === 'activated') send(target)
+        else if (target) target.addEventListener('statechange', () => target.state === 'activated' && send(target))
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [token, data])
 
   // The server now withholds the whole itinerary when the owner disabled the map
   // (share_map=false), so the Plan tab has nothing to show — land on the first
@@ -46,5 +95,5 @@ export function useSharedTrip() {
   const base = String(data?.baseCurrency || data?.trip?.currency || 'EUR').toUpperCase()
   const { convert } = useExchangeRates(base)
 
-  return { data, error, base, convert, selectedDay, setSelectedDay, activeTab, setActiveTab, showLangPicker, setShowLangPicker }
+  return { data, error, cachedAt, base, convert, selectedDay, setSelectedDay, activeTab, setActiveTab, showLangPicker, setShowLangPicker }
 }

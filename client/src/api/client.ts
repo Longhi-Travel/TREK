@@ -986,6 +986,17 @@ export const shareApi = {
   createLink: (tripId: number | string, perms?: Record<string, boolean>) => apiClient.post(`/trips/${tripId}/share-link`, perms || {}).then(r => r.data),
   deleteLink: (tripId: number | string) => apiClient.delete(`/trips/${tripId}/share-link`).then(r => r.data),
   getSharedTrip: (token: string) => apiClient.get(`/shared/${token}`).then(r => r.data),
+  /**
+   * Shared snapshot + cache metadata. The shared-page service worker answers
+   * with X-Shared-Cache: hit (+ X-Shared-Cached-At) when the network is down
+   * and the response came from its offline cache — the page shows a "cached
+   * copy from <date>" banner off that.
+   */
+  getSharedTripCached: (token: string) =>
+    apiClient.get(`/shared/${token}`).then(r => ({
+      data: r.data,
+      cachedAt: r.headers?.['x-shared-cache'] === 'hit' ? (r.headers?.['x-shared-cached-at'] as string | undefined) || null : null,
+    })),
 }
 
 // Public transit routing (#1065) — Transitous/MOTIS proxied through the server.

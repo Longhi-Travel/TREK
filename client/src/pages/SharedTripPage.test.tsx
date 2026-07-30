@@ -443,6 +443,60 @@ describe('SharedTripPage', () => {
     });
   });
 
+  describe('FE-PAGE-SHARED-023: pinned emergency block with one-tap phone links', () => {
+    it('renders emergency contacts above the tabs with tel: links for full numbers only', async () => {
+      server.use(
+        http.get('/api/shared/:token', ({ params }) => {
+          if (params.token !== 'emergency-token') return;
+          return HttpResponse.json({
+            trip: {
+              id: 1, title: 'Shared Paris Trip', start_date: '2026-07-01', end_date: '2026-07-05',
+              emergency_info: 'Ana (Longhi Travel): +55 11 99191-0468\n\nEmergência local: 112',
+            },
+            days: [], assignments: {}, dayNotes: {}, places: [], reservations: [],
+            accommodations: [], packing: [], budget: [], categories: [],
+            permissions: { share_bookings: false, share_packing: false, share_budget: false, share_collab: false },
+            collab: [],
+          });
+        }),
+      );
+
+      const { container } = renderSharedTrip('emergency-token');
+      await waitFor(() => expect(screen.getByText('Shared Paris Trip')).toBeInTheDocument());
+
+      expect(screen.getByText('Emergency contacts')).toBeInTheDocument();
+      const tel = container.querySelector('a[href="tel:+5511991910468"]');
+      expect(tel).not.toBeNull();
+      // Short local numbers (112) must not be auto-linked — too collision-prone.
+      expect(container.querySelector('a[href="tel:112"]')).toBeNull();
+      expect(screen.getByText(/112/)).toBeInTheDocument();
+    });
+  });
+
+  describe('FE-PAGE-SHARED-024: offline banner when the snapshot comes from the SW cache', () => {
+    it('shows the cached-copy banner when X-Shared-Cache: hit is present', async () => {
+      server.use(
+        http.get('/api/shared/:token', ({ params }) => {
+          if (params.token !== 'offline-token') return;
+          return HttpResponse.json(
+            {
+              trip: { id: 1, title: 'Shared Paris Trip', start_date: '2026-07-01', end_date: '2026-07-05' },
+              days: [], assignments: {}, dayNotes: {}, places: [], reservations: [],
+              accommodations: [], packing: [], budget: [], categories: [],
+              permissions: { share_bookings: false, share_packing: false, share_budget: false, share_collab: false },
+              collab: [],
+            },
+            { headers: { 'X-Shared-Cache': 'hit', 'X-Shared-Cached-At': '2026-07-28T10:00:00.000Z' } },
+          );
+        }),
+      );
+
+      renderSharedTrip('offline-token');
+      await waitFor(() => expect(screen.getByText('Shared Paris Trip')).toBeInTheDocument());
+      expect(screen.getByText(/Offline copy from/)).toBeInTheDocument();
+    });
+  });
+
   describe('FE-PAGE-SHARED-014: Language picker toggles', () => {
     it('opens language dropdown and closes after selecting a language', async () => {
       renderSharedTrip('test-token');

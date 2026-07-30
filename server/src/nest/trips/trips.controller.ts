@@ -134,7 +134,7 @@ export class TripsController {
     if (body.cover_image !== undefined && !this.trips.can('trip_cover_upload', user.role, ownerId, user.id, isMember)) {
       throw new HttpException({ error: 'No permission to change cover image' }, 403);
     }
-    const editFields = ['title', 'description', 'start_date', 'end_date', 'currency', 'reminder_days', 'day_count'];
+    const editFields = ['title', 'description', 'start_date', 'end_date', 'currency', 'reminder_days', 'day_count', 'emergency_info'];
     if (editFields.some((f) => body[f] !== undefined) && !this.trips.can('trip_edit', user.role, ownerId, user.id, isMember)) {
       throw new HttpException({ error: 'No permission to edit this trip' }, 403);
     }

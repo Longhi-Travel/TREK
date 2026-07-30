@@ -74,6 +74,7 @@ export type TripRenameGuestRequest = z.infer<typeof tripRenameGuestRequestSchema
 export const tripCreateRequestSchema = z.object({
   title: z.string().min(1),
   description: z.string().nullable().optional(),
+  emergency_info: z.string().max(10000).nullable().optional(),
   start_date: z.string().nullable().optional(),
   end_date: z.string().nullable().optional(),
   currency: z.string().optional(),
@@ -100,6 +101,7 @@ export const tripUpdateRequestSchema = z.object({
   day_count: z.number().optional(),
   is_archived: z.union([z.boolean(), z.number()]).optional(),
   cover_image: z.string().nullable().optional(),
+  emergency_info: z.string().max(10000).nullable().optional(),
 });
 export type TripUpdateRequest = z.infer<typeof tripUpdateRequestSchema>;
 
