@@ -1,4 +1,4 @@
-import { Trash2, ExternalLink, Download, MapPin, Ticket, StickyNote, Star, RotateCcw, Pencil } from 'lucide-react'
+import { Trash2, ExternalLink, Download, MapPin, Ticket, StickyNote, Star, RotateCcw, Pencil, ShieldCheck, ShieldOff } from 'lucide-react'
 import type { TripFile } from '../../types'
 import type { FileManagerState } from './useFileManager'
 import { TRANSPORT_TYPES } from './FileManager.constants'
@@ -10,8 +10,10 @@ import { SourceBadge } from './FileManagerSourceBadge'
 export function FileRow(p: FileManagerState & { file: TripFile; isTrash?: boolean }) {
   const {
     file, isTrash = false, places, reservations, t, locale, can, trip,
-    handleStar, handleRestore, handlePermanentDelete, handleDelete, openFile, setAssignFileId,
+    handleStar, handleSensitivity, handleRestore, handlePermanentDelete, handleDelete, openFile, setAssignFileId,
   } = p
+  // NULL/undefined sensitivity counts as sensitive — the server fails closed.
+  const isSensitive = file.sensitivity !== 'normal'
   const FileIcon = getFileIcon(file.mime_type)
   const allLinkedPlaceIds = new Set<number>()
   if (file.place_id) allLinkedPlaceIds.add(file.place_id)
@@ -108,6 +110,9 @@ export function FileRow(p: FileManagerState & { file: TripFile; isTrash?: boolea
           </>
         ) : (
           <>
+            {can('file_edit', trip) && <button onClick={() => handleSensitivity(file)} title={isSensitive ? t('files.sensitivityOn') : t('files.sensitivityOff')} style={{ padding: 6, background: 'none', border: 'none', cursor: 'pointer', color: isSensitive ? 'var(--warning)' : 'var(--text-faint)', borderRadius: 6, display: 'flex' }}>
+              {isSensitive ? <ShieldCheck size={14} /> : <ShieldOff size={14} />}
+            </button>}
             <button onClick={() => handleStar(file.id)} title={file.starred ? t('files.unstar') || 'Unstar' : t('files.star') || 'Star'} style={{ padding: 6, background: 'none', border: 'none', cursor: 'pointer', color: file.starred ? '#facc15' : 'var(--text-faint)', borderRadius: 6, display: 'flex' }}
               onMouseEnter={e => { if (!file.starred) e.currentTarget.style.color = '#facc15' }} onMouseLeave={e => { if (!file.starred) e.currentTarget.style.color = 'var(--text-faint)' }}>
               <Star size={14} fill={file.starred ? '#facc15' : 'none'} />

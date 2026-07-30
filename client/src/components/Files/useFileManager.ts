@@ -65,6 +65,17 @@ export function useFileManager({ files = [], onUpload, onDelete, onUpdate, place
     } catch { /* */ }
   }
 
+  // Operator override of the guest-sharing sensitivity gate, both directions.
+  // NULL/undefined counts as sensitive (server fails closed), so toggling from
+  // an unset value goes to 'normal'.
+  const handleSensitivity = async (file: TripFile) => {
+    const next = file.sensitivity === 'normal' ? 'sensitive' : 'normal'
+    try {
+      await filesApi.update(tripId, file.id, { sensitivity: next })
+      refreshFiles()
+    } catch { /* */ }
+  }
+
   const handleRestore = async (fileId: number) => {
     try {
       await filesApi.restore(tripId, fileId)
@@ -205,7 +216,7 @@ export function useFileManager({ files = [], onUpload, onDelete, onUpdate, place
     files, places, days, assignments, reservations, tripId, allowedFileTypes,
     uploading, filterType, setFilterType, lightboxIndex, setLightboxIndex,
     showTrash, trashFiles, loadingTrash, toast, can, trip, t, locale,
-    toggleTrash, refreshFiles, handleStar, handleRestore, handlePermanentDelete, handleEmptyTrash,
+    toggleTrash, refreshFiles, handleStar, handleSensitivity, handleRestore, handlePermanentDelete, handleEmptyTrash,
     previewFile, setPreviewFile, previewFileUrl, assignFileId, setAssignFileId,
     getRootProps, getInputProps, isDragActive, handlePaste, filteredFiles, handleDelete,
     handleAssign, mediaFiles, openFile,

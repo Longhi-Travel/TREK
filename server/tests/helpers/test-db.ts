@@ -68,6 +68,7 @@ const RESET_TABLES = [
   'days',
   // Trip
   'share_tokens',
+  'share_files',
   'trip_members',
   'trips',
   // Journey

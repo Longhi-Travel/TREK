@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { loadTagsByPlaceIds } from './queryHelpers';
 import { serveFilePath } from './placePhotoCache';
 import { getUserSettings } from './settingsService';
+import { findShareRow, getSharedFilesPayload, hashFileCode } from './shareFilesService';
 
 const PLACE_PHOTO_PROXY_PREFIX = '/api/maps/place-photo/';
 
@@ -27,6 +28,14 @@ interface SharePermissions {
   share_packing?: boolean;
   share_budget?: boolean;
   share_collab?: boolean;
+  /** Guest document access — defaults OFF; explicit per-trip opt-in (goal item 13). */
+  share_files?: boolean;
+  /**
+   * Unlock code for sensitive files. undefined = leave unchanged;
+   * '' or null = clear; a value = scrypt-hash and store. Never stored or
+   * logged in plaintext.
+   */
+  file_access_code?: string | null;
 }
 
 interface ShareTokenInfo {
@@ -37,6 +46,27 @@ interface ShareTokenInfo {
   share_packing: boolean;
   share_budget: boolean;
   share_collab: boolean;
+  share_files: boolean;
+  has_file_code: boolean;
+}
+
+/**
+ * New-link expiry: SHARE_LINK_TTL_DAYS (default 30) after the trip's end date —
+ * a share link should outlive the trip briefly, not indefinitely. Trips whose
+ * end already passed (or that have none) get now + TTL so a fresh link is
+ * never dead on arrival. Existing rows are never touched. Stored and compared
+ * in UTC (ISO strings vs SQLite datetime('now')).
+ */
+function computeShareExpiry(tripId: string): string {
+  const ttlDays = Math.max(1, parseInt(process.env.SHARE_LINK_TTL_DAYS || '30', 10) || 30);
+  const trip = db.prepare('SELECT end_date FROM trips WHERE id = ?').get(tripId) as { end_date: string | null } | undefined;
+  const now = Date.now();
+  let base = now;
+  if (trip?.end_date) {
+    const end = Date.parse(`${trip.end_date}T23:59:59Z`);
+    if (Number.isFinite(end) && end > now) base = end;
+  }
+  return new Date(base + ttlDays * 24 * 60 * 60 * 1000).toISOString();
 }
 
 /**
@@ -54,23 +84,35 @@ export function createOrUpdateShareLink(
     share_packing = false,
     share_budget = false,
     share_collab = false,
+    share_files = false,
+    file_access_code,
   } = permissions;
+
+  if (file_access_code !== undefined && file_access_code !== null && file_access_code !== '') {
+    if (!/^[A-Za-z0-9]{10,64}$/.test(file_access_code)) {
+      throw new Error('File access code must be 10-64 letters/digits');
+    }
+  }
+  // undefined → keep stored hash; ''/null → clear; value → replace.
+  const codeHash =
+    file_access_code === undefined ? undefined : file_access_code ? hashFileCode(file_access_code) : null;
 
   const existing = db.prepare('SELECT token FROM share_tokens WHERE trip_id = ?').get(tripId) as { token: string } | undefined;
   if (existing) {
-    db.prepare('UPDATE share_tokens SET share_map = ?, share_bookings = ?, share_packing = ?, share_budget = ?, share_collab = ? WHERE trip_id = ?')
-      .run(share_map ? 1 : 0, share_bookings ? 1 : 0, share_packing ? 1 : 0, share_budget ? 1 : 0, share_collab ? 1 : 0, tripId);
+    db.prepare('UPDATE share_tokens SET share_map = ?, share_bookings = ?, share_packing = ?, share_budget = ?, share_collab = ?, share_files = ? WHERE trip_id = ?')
+      .run(share_map ? 1 : 0, share_bookings ? 1 : 0, share_packing ? 1 : 0, share_budget ? 1 : 0, share_collab ? 1 : 0, share_files ? 1 : 0, tripId);
+    if (codeHash !== undefined) {
+      db.prepare('UPDATE share_tokens SET file_code_hash = ? WHERE trip_id = ?').run(codeHash, tripId);
+    }
     return { token: existing.token, created: false };
   }
 
-  // New share links default to a 90-day TTL. Existing tokens that were
-  // created before the expires_at migration keep NULL here and remain
-  // valid indefinitely until the owner rotates them; that preserves
-  // behaviour for anyone who's already sharing a link.
+  // 192-bit URL-safe token (item 12: ≥128 bits). Expiry follows the trip's end
+  // date — see computeShareExpiry. Pre-migration NULL rows stay valid.
   const token = crypto.randomBytes(24).toString('base64url');
-  const expiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString();
-  db.prepare('INSERT INTO share_tokens (trip_id, token, created_by, share_map, share_bookings, share_packing, share_budget, share_collab, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
-    .run(tripId, token, createdBy, share_map ? 1 : 0, share_bookings ? 1 : 0, share_packing ? 1 : 0, share_budget ? 1 : 0, share_collab ? 1 : 0, expiresAt);
+  const expiresAt = computeShareExpiry(tripId);
+  db.prepare('INSERT INTO share_tokens (trip_id, token, created_by, share_map, share_bookings, share_packing, share_budget, share_collab, share_files, file_code_hash, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .run(tripId, token, createdBy, share_map ? 1 : 0, share_bookings ? 1 : 0, share_packing ? 1 : 0, share_budget ? 1 : 0, share_collab ? 1 : 0, share_files ? 1 : 0, codeHash ?? null, expiresAt);
   return { token, created: true };
 }
 
@@ -88,6 +130,8 @@ export function getShareLink(tripId: string): ShareTokenInfo | null {
     share_packing: !!row.share_packing,
     share_budget: !!row.share_budget,
     share_collab: !!row.share_collab,
+    share_files: !!row.share_files,
+    has_file_code: !!row.file_code_hash,
   };
 }
 
@@ -103,9 +147,9 @@ export function deleteShareLink(tripId: string): void {
  * permission flags. Returns null if the token is invalid or the trip is gone.
  */
 export function getSharedTripData(token: string): Record<string, any> | null {
-  const shareRow = db.prepare(
-    "SELECT * FROM share_tokens WHERE token = ? AND (expires_at IS NULL OR expires_at > datetime('now'))"
-  ).get(token) as any;
+  // findShareRow validates expiry and re-confirms the token equality in
+  // constant time (item 12).
+  const shareRow = findShareRow(token) as any;
   if (!shareRow) return null;
 
   const tripId = shareRow.trip_id;
@@ -222,7 +266,16 @@ export function getSharedTripData(token: string): Record<string, any> | null {
     share_packing: !!shareRow.share_packing,
     share_budget: !!shareRow.share_budget,
     share_collab: !!shareRow.share_collab,
+    share_files: !!shareRow.share_files,
   };
+
+  // Guest-visible documents: public UUIDs grouped by the entity ids the page
+  // renders. Nothing here when the owner left documents off. Note for the
+  // payload audit (goal item 10): this is the ONLY place file identifiers
+  // enter the shared payload, and they are per-share mints, not DB keys.
+  const sharedFiles = permissions.share_files
+    ? getSharedFilesPayload({ id: shareRow.id, trip_id: tripId }, permissions)
+    : null;
 
   // Collab messages (only if owner chose to share)
   const collabMessages = permissions.share_collab
@@ -249,7 +302,7 @@ export function getSharedTripData(token: string): Record<string, any> | null {
   // itinerary: days, their assignments/notes, and the place list with coordinates,
   // addresses and notes. Withhold it when the owner disabled the map.
   return {
-    trip, baseCurrency, categories, permissions, updatedSinceShare,
+    trip, baseCurrency, categories, permissions, updatedSinceShare, sharedFiles,
     days: permissions.share_map ? days : [],
     assignments: permissions.share_map ? assignments : {},
     dayNotes: permissions.share_map ? dayNotes : {},

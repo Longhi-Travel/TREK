@@ -143,7 +143,7 @@ export class FilesController {
   }
 
   @Put(':id')
-  update(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('id') id: string, @Body() body: { description?: string; place_id?: string | null; reservation_id?: string | null }, @Headers('x-socket-id') socketId?: string) {
+  update(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('id') id: string, @Body() body: { description?: string; place_id?: string | null; reservation_id?: string | null; sensitivity?: string }, @Headers('x-socket-id') socketId?: string) {
     const trip = this.requireTrip(tripId, user);
     if (!this.files.can('file_edit', trip, user)) {
       throw new HttpException({ error: 'No permission to edit files' }, 403);
@@ -152,8 +152,16 @@ export class FilesController {
     if (!file) {
       throw new HttpException({ error: 'File not found' }, 404);
     }
+    if (body.sensitivity !== undefined && body.sensitivity !== 'sensitive' && body.sensitivity !== 'normal') {
+      throw new HttpException({ error: 'sensitivity must be "sensitive" or "normal"' }, 400);
+    }
     this.assertLinkTargets(tripId, { reservation_id: body.reservation_id, place_id: body.place_id });
-    const updated = this.files.updateFile(id, file, { description: body.description, place_id: body.place_id, reservation_id: body.reservation_id });
+    const updated = this.files.updateFile(id, file, {
+      description: body.description,
+      place_id: body.place_id,
+      reservation_id: body.reservation_id,
+      sensitivity: body.sensitivity as 'sensitive' | 'normal' | undefined,
+    });
     this.files.broadcast(tripId, 'file:updated', { file: updated }, socketId);
     return { file: updated };
   }

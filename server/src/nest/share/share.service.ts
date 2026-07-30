@@ -3,6 +3,7 @@ import { canAccessTrip } from '../../db/database';
 import { checkPermission } from '../../services/permissions';
 import type { User } from '../../types';
 import * as svc from '../../services/shareService';
+import * as filesSvc from '../../services/shareFilesService';
 
 type Trip = NonNullable<ReturnType<typeof canAccessTrip>>;
 
@@ -27,4 +28,15 @@ export class ShareService {
   remove(tripId: string) { return svc.deleteShareLink(tripId); }
   getSharedTripData(token: string) { return svc.getSharedTripData(token); }
   getSharedPlacePhotoPath(token: string, placeId: string) { return svc.getSharedPlacePhotoPath(token, placeId); }
+
+  // Guest document access (share_files) — see services/shareFilesService.ts.
+  resolveSharedFile(token: string, publicId: string, unlockToken: string | null | undefined) {
+    return filesSvc.resolveSharedFile(token, publicId, unlockToken);
+  }
+  findShareRow(token: string) { return filesSvc.findShareRow(token); }
+  unlockAllowed(token: string, ip: string) { return filesSvc.unlockAllowed(token, ip); }
+  recordUnlockFailure(token: string, ip: string) { filesSvc.recordUnlockFailure(token, ip); }
+  recordUnlockSuccess(token: string, ip: string) { filesSvc.recordUnlockSuccess(token, ip); }
+  verifyFileCode(hash: string | null | undefined, code: string) { return filesSvc.verifyFileCode(hash, code); }
+  issueUnlockToken(shareTokenId: number) { return filesSvc.issueUnlockToken(shareTokenId); }
 }

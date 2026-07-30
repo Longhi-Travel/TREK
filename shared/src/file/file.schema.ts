@@ -18,6 +18,8 @@ export const fileUpdateRequestSchema = z.object({
   description: z.string().optional(),
   place_id: nullableIdField,
   reservation_id: nullableIdField,
+  /** Guest-sharing gate: 'sensitive' requires the share unlock code. */
+  sensitivity: z.enum(['sensitive', 'normal']).optional(),
 });
 export type FileUpdateRequest = z.infer<typeof fileUpdateRequestSchema>;
 

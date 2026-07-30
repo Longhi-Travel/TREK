@@ -3736,6 +3736,39 @@ function runMigrations(db: Database.Database): void {
           BEGIN UPDATE trips SET updated_at = CURRENT_TIMESTAMP WHERE id = (SELECT trip_id FROM days WHERE id = OLD.day_id); END;
       `);
     },
+    () => {
+      // Guest document access on share links.
+      // - share_files defaults OFF for every existing AND new link; documents
+      //   never become guest-reachable without an explicit opt-in per trip.
+      // - file_code_hash stores the scrypt hash of the operator-issued unlock
+      //   code for sensitive files (never the code itself).
+      // - trip_files.sensitivity: 'sensitive' | 'normal'; NULL is treated as
+      //   sensitive everywhere (fail closed). Existing rows are backfilled
+      //   sensitive explicitly.
+      // - share_files maps per-share random UUIDs onto file rows so no
+      //   database primary key is ever exposed to a guest (no IDOR).
+      for (const stmt of [
+        'ALTER TABLE share_tokens ADD COLUMN share_files INTEGER DEFAULT 0',
+        'ALTER TABLE share_tokens ADD COLUMN file_code_hash TEXT',
+        'ALTER TABLE trip_files ADD COLUMN sensitivity TEXT',
+      ]) {
+        try {
+          db.exec(stmt);
+        } catch (err: any) {
+          if (!err.message?.includes('duplicate column name')) throw err;
+        }
+      }
+      db.exec("UPDATE trip_files SET sensitivity = 'sensitive' WHERE sensitivity IS NULL");
+      db.exec(`CREATE TABLE IF NOT EXISTS share_files (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        share_token_id INTEGER NOT NULL REFERENCES share_tokens(id) ON DELETE CASCADE,
+        file_id INTEGER NOT NULL REFERENCES trip_files(id) ON DELETE CASCADE,
+        public_id TEXT NOT NULL UNIQUE,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(share_token_id, file_id)
+      )`);
+      db.exec('CREATE INDEX IF NOT EXISTS idx_share_files_token ON share_files (share_token_id)');
+    },
   ];
 
   if (currentVersion < migrations.length) {

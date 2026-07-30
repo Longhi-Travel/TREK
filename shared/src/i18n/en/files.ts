@@ -39,6 +39,8 @@ const files: TranslationStrings = {
   'files.restore': 'Restore',
   'files.star': 'Star',
   'files.unstar': 'Unstar',
+  'files.sensitivityOn': 'Protected on the shared link (needs access code) — click to open up',
+  'files.sensitivityOff': 'Open on the shared link — click to protect with the access code',
   'files.assign': 'Assign',
   'files.assignTitle': 'Assign File',
   'files.assignPlace': 'Place',

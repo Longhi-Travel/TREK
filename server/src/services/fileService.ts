@@ -48,6 +48,24 @@ export const filesDir = path.join(__dirname, '../../uploads/files');
 
 export { verifyTripAccess } from './tripAccess';
 
+const SENSITIVE_NAME_RE =
+  /(ticket|bilhete|boarding|embarque|pass(?:_|-|\b|port)|passaporte|visa|visto|voucher|reserva|booking|confirma|itiner|e-?ticket|pnr)/i;
+
+/**
+ * Upload-time sensitivity default for guest sharing (share_files). PDFs and
+ * images are where tickets, passport scans and vouchers live, so they default
+ * SENSITIVE; ticket/PNR-shaped names catch the rest. The operator can override
+ * per file in the manager — heuristics are the default, the operator is the
+ * backstop, and NULL is treated as sensitive everywhere (fail closed).
+ */
+export function classifyFileSensitivity(originalName: string | null | undefined, mimeType: string | null | undefined): 'sensitive' | 'normal' {
+  const mime = (mimeType || '').toLowerCase();
+  if (mime === 'application/pdf' || mime.startsWith('image/')) return 'sensitive';
+  if (mime.includes('pkpass')) return 'sensitive';
+  if (SENSITIVE_NAME_RE.test(originalName || '')) return 'sensitive';
+  return 'normal';
+}
+
 export function getAllowedExtensions(): string {
   try {
     const row = db.prepare("SELECT value FROM app_settings WHERE key = 'allowed_file_types'").get() as { value: string } | undefined;
@@ -191,8 +209,8 @@ export function createFile(
   opts: { place_id?: string | null; reservation_id?: string | null; description?: string | null }
 ) {
   const result = db.prepare(`
-    INSERT INTO trip_files (trip_id, place_id, reservation_id, filename, original_name, file_size, mime_type, description, uploaded_by)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO trip_files (trip_id, place_id, reservation_id, filename, original_name, file_size, mime_type, description, uploaded_by, sensitivity)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     tripId,
     opts.place_id || null,
@@ -202,7 +220,10 @@ export function createFile(
     file.size,
     file.mimetype,
     opts.description || null,
-    uploadedBy
+    uploadedBy,
+    // Fail-closed default for guest sharing: PDFs/images (tickets, scans) start
+    // sensitive; the operator can override per file in the manager.
+    classifyFileSensitivity(file.originalname, file.mimetype)
   );
 
   const created = db.prepare(`${FILE_SELECT} WHERE f.id = ?`).get(result.lastInsertRowid) as TripFile;
@@ -212,18 +233,20 @@ export function createFile(
 export function updateFile(
   id: string | number,
   current: TripFile,
-  updates: { description?: string; place_id?: string | null; reservation_id?: string | null }
+  updates: { description?: string; place_id?: string | null; reservation_id?: string | null; sensitivity?: 'sensitive' | 'normal' }
 ) {
   db.prepare(`
     UPDATE trip_files SET
       description = ?,
       place_id = ?,
-      reservation_id = ?
+      reservation_id = ?,
+      sensitivity = ?
     WHERE id = ?
   `).run(
     updates.description !== undefined ? updates.description : current.description,
     updates.place_id !== undefined ? (updates.place_id || null) : current.place_id,
     updates.reservation_id !== undefined ? (updates.reservation_id || null) : current.reservation_id,
+    updates.sensitivity !== undefined ? updates.sensitivity : ((current as TripFile & { sensitivity?: string | null }).sensitivity ?? 'sensitive'),
     id
   );
 

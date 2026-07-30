@@ -12,5 +12,12 @@ const share: TranslationStrings = {
   'share.permPacking': 'Mala',
   'share.permBudget': 'Custos',
   'share.permCollab': 'Chat',
+  'share.permFiles': 'Documentos',
+  'share.fileCodeTitle': 'Código de acesso para documentos protegidos',
+  'share.fileCodeSet': '· código definido',
+  'share.fileCodeHint': 'Passagens e documentos ficam bloqueados no link até o viajante digitar este código. Envie-o separadamente (por voz ou SMS), nunca na mesma mensagem do link.',
+  'share.fileCodePlaceholder': '10+ letras/dígitos',
+  'share.fileCodeInvalid': 'Use pelo menos 10 letras ou dígitos (sem espaços)',
+  'share.fileCodeSave': 'Salvar código',
 };
 export default share;

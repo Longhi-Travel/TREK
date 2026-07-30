@@ -93,6 +93,7 @@ export interface TripFile {
   mime_type: string
   description?: string | null
   starred?: number
+  sensitivity?: 'sensitive' | 'normal' | null
   deleted_at?: string | null
   created_at: string
   reservation_title?: string

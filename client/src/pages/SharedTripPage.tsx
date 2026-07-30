@@ -30,6 +30,7 @@ import { isDayInAccommodationRange } from '../utils/dayOrder';
 import { getFlightLegs, getTrainLegs } from '../utils/flightLegs';
 import { splitReservationDateTime } from '../utils/formatters';
 import { computeMapViewport, TILE_SIZE_RASTER } from '../utils/mapViewport';
+import { SharedFileChips } from './sharedTrip/SharedFiles';
 import SharedMarkdown from './sharedTrip/SharedMarkdown';
 import { useSharedTrip } from './sharedTrip/useSharedTrip';
 
@@ -180,6 +181,7 @@ export default function SharedTripPage() {
     categories,
     permissions,
     collab,
+    sharedFiles,
   } = data;
   const sortedDays = [...(days || [])].sort((a: any, b: any) => a.day_number - b.day_number);
 
@@ -770,6 +772,11 @@ export default function SharedTripPage() {
                                       {sub}
                                     </div>
                                   )}
+                                  {!r.__leg && sharedFiles?.reservations?.[String(r.id)] && (
+                                    <div style={{ marginTop: 4 }}>
+                                      <SharedFileChips files={sharedFiles.reservations[String(r.id)]} />
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             );
@@ -884,6 +891,18 @@ export default function SharedTripPage() {
                                         {t('shared.website')}
                                       </a>
                                     )}
+                                  </div>
+                                )}
+                                {(sharedFiles?.places?.[String(place.id)] || sharedFiles?.assignments?.[String(item.data.id)]) && (
+                                  <div style={{ marginTop: 4 }}>
+                                    <SharedFileChips
+                                      files={[
+                                        ...(sharedFiles?.places?.[String(place.id)] || []),
+                                        ...(sharedFiles?.assignments?.[String(item.data.id)] || []).filter(
+                                          (f: any) => !(sharedFiles?.places?.[String(place.id)] || []).some((g: any) => g.id === f.id)
+                                        ),
+                                      ]}
+                                    />
                                   </div>
                                 )}
                               </div>
@@ -1008,6 +1027,11 @@ export default function SharedTripPage() {
                               </span>
                             )}
                     </div>
+                    {sharedFiles?.reservations?.[String(r.id)] && (
+                      <div style={{ marginTop: 6 }}>
+                        <SharedFileChips files={sharedFiles.reservations[String(r.id)]} />
+                      </div>
+                    )}
                   </div>
                   <span
                     className={

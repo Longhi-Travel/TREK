@@ -38,7 +38,12 @@ function ShareLinkSection({ tripId, t }: { tripId: number; t: (key: string, para
   const [shareToken, setShareToken] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
-  const [perms, setPerms] = useState({ share_map: true, share_bookings: true, share_packing: false, share_budget: false, share_collab: false })
+  const [perms, setPerms] = useState({ share_map: true, share_bookings: true, share_packing: false, share_budget: false, share_collab: false, share_files: false })
+  // Unlock code for sensitive documents — write-only: the server stores a hash
+  // and only ever reports whether one is set.
+  const [hasFileCode, setHasFileCode] = useState(false)
+  const [fileCode, setFileCode] = useState('')
+  const [fileCodeSaving, setFileCodeSaving] = useState(false)
   const toast = useToast()
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -49,7 +54,10 @@ function ShareLinkSection({ tripId, t }: { tripId: number; t: (key: string, para
   useEffect(() => {
     shareApi.getLink(tripId).then(d => {
       setShareToken(d.token)
-      if (d.token) setPerms({ share_map: d.share_map ?? true, share_bookings: d.share_bookings ?? true, share_packing: d.share_packing ?? false, share_budget: d.share_budget ?? false, share_collab: d.share_collab ?? false })
+      if (d.token) {
+        setPerms({ share_map: d.share_map ?? true, share_bookings: d.share_bookings ?? true, share_packing: d.share_packing ?? false, share_budget: d.share_budget ?? false, share_collab: d.share_collab ?? false, share_files: d.share_files ?? false })
+        setHasFileCode(!!d.has_file_code)
+      }
       setLoading(false)
     }).catch(() => setLoading(false))
   }, [tripId])
@@ -105,6 +113,7 @@ function ShareLinkSection({ tripId, t }: { tripId: number; t: (key: string, para
           { key: 'share_packing', label: t('share.permPacking') },
           { key: 'share_budget', label: t('share.permBudget') },
           { key: 'share_collab', label: t('share.permCollab') },
+          { key: 'share_files', label: t('share.permFiles') },
         ].map(opt => (
           <button key={opt.key} onClick={() => !opt.always && handleUpdatePerms(opt.key, !perms[opt.key])}
             style={{
@@ -121,6 +130,49 @@ function ShareLinkSection({ tripId, t }: { tripId: number; t: (key: string, para
           </button>
         ))}
       </div>
+
+      {/* Sensitive-document unlock code — required before sensitive files open
+          on the link. Write-only: the server stores a scrypt hash. */}
+      {perms.share_files && (
+        <div className="bg-surface-tertiary border border-edge-faint" style={{ borderRadius: 8, padding: '8px 10px', marginBottom: 12 }}>
+          <div className="text-content-secondary" style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))', fontWeight: 600, marginBottom: 4 }}>
+            {t('share.fileCodeTitle')}
+            {hasFileCode && <span className="text-success" style={{ marginLeft: 6 }}>{t('share.fileCodeSet')}</span>}
+          </div>
+          <p className="text-content-faint" style={{ fontSize: 'calc(10px * var(--fs-scale-caption, 1))', margin: '0 0 6px', lineHeight: 1.4 }}>
+            {t('share.fileCodeHint')}
+          </p>
+          <div style={{ display: 'flex', gap: 6 }}>
+            <input
+              type="text"
+              value={fileCode}
+              onChange={e => setFileCode(e.target.value)}
+              placeholder={t('share.fileCodePlaceholder')}
+              autoComplete="off"
+              className="text-content bg-surface-card border border-edge"
+              style={{ flex: 1, borderRadius: 6, padding: '4px 8px', fontSize: 'calc(11px * var(--fs-scale-caption, 1))', fontFamily: 'monospace', outline: 'none' }}
+            />
+            <button
+              onClick={async () => {
+                if (!/^[A-Za-z0-9]{10,64}$/.test(fileCode)) { toast.error(t('share.fileCodeInvalid')); return }
+                setFileCodeSaving(true)
+                try {
+                  await shareApi.createLink(tripId, { ...perms, file_access_code: fileCode })
+                  setHasFileCode(true)
+                  setFileCode('')
+                } catch { toast.error(t('share.createError')) } finally { setFileCodeSaving(false) }
+              }}
+              disabled={fileCodeSaving}
+              style={{
+                padding: '4px 12px', borderRadius: 6, border: 'none', background: 'var(--accent)', color: 'var(--accent-text)',
+                fontSize: 'calc(11px * var(--fs-scale-caption, 1))', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              {t('share.fileCodeSave')}
+            </button>
+          </div>
+        </div>
+      )}
 
       {shareUrl ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
